@@ -3,10 +3,98 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Site</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <title>Morning Focus</title>
+
+  <!-- Script to dynamically find and apply any available icon format -->
+  <script>
+    (function autoDetectFavicon() {
+      // List of candidate filenames and formats to check for
+      const candidateIcons = [
+        'icon.png',
+        'favicon.ico',
+        'icon.svg',
+        'icon.webp',
+        'icon.jpg',
+        'icon.jpeg',
+        'favicon.png'
+      ];
+
+      // Helper function to test if an icon file exists and loads successfully
+      function checkIconExists(url) {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve(true);
+          img.onerror = () => resolve(false);
+          img.src = url;
+        });
+      }
+
+      // Search through candidates and set the favicon link element
+      async function applyFirstFoundIcon() {
+        for (const iconPath of candidateIcons) {
+          const exists = await checkIconExists(iconPath);
+          if (exists) {
+            let link = document.querySelector("link[rel*='icon']");
+            if (!link) {
+              link = document.createElement('link');
+              link.rel = 'icon';
+              document.head.appendChild(link);
+            }
+            link.href = iconPath;
+            console.log('Favicon loaded successfully from:', iconPath);
+            break; // Stop at the first valid icon found
+          }
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', applyFirstFoundIcon);
+      } else {
+        applyFirstFoundIcon();
+      }
+    })();
+  </script>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #f4f6f8;
+      color: #1a1a1a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      background: #ffffff;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      max-width: 480px;
+      line-height: 1.6;
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      color: #111827;
+    }
+    p {
+      color: #4b5563;
+      font-size: 0.95rem;
+      margin-bottom: 0;
+    }
+  </style>
 </head>
 <body>
-  <h1>My Website</h1>
+
+  <div class="card">
+    <h1>Morning Focus Routine</h1>
+    <p>
+      Starting the day with clear priorities sets the tone for meaningful work. Spending the first twenty minutes reviewing key objectives and tackling high-impact tasks creates momentum before stepping into daily meetings and incoming messages.
+    </p>
+  </div>
+
 </body>
 </html>
