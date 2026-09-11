@@ -3,616 +3,1395 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Calyx Studio</title>
-
-  <link rel="icon" href="web.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#02030a">
+  <title>Calyx Studio — Thorn AI</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet">
-
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
   <style>
     :root {
-      --bg-canvas: #030508;
-      --text-primary: #ECEFF4;
-      --text-muted: #7E8D9F;
-
-      --glass-bg: rgba(10, 15, 25, 0.65);
-      --glass-border: rgba(41, 98, 255, 0.15);
-
-      --thorn-blue-deep: #002266;
-      --thorn-blue-bright: #2962FF;
-      --thorn-cyan: #00E5FF;
-
-      --rose-accent: #1E3A8A;
-      --rose-glow: #3B82F6;
-
-      --font-serif: 'Cinzel', serif;
-      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --bg: #02030a;
+      --panel: rgba(9, 12, 25, .72);
+      --panel-2: rgba(14, 18, 38, .78);
+      --line: rgba(121, 158, 255, .18);
+      --line-strong: rgba(107, 157, 255, .48);
+      --white: #f5f7ff;
+      --muted: #8d96ad;
+      --blue: #386cff;
+      --cyan: #62d8ff;
+      --rose: #879cff;
+      --deep: #071447;
+      --danger: #ff6584;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .55);
+      --radius: 22px;
+      --font: Inter, system-ui, sans-serif;
+      --serif: Cinzel, Georgia, serif;
     }
 
     * {
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent
+    }
+
+    html,
+    body {
       margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font)
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit
+    }
+
+    button {
+      color: inherit
+    }
+
+    button:focus-visible,
+    .model-option:focus-visible,
+    .icon-btn:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 2px
     }
 
     body {
-      background-color: var(--bg-canvas);
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
-      display: flex;
-    }
-
-    .ambient-mesh {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
       background:
-        radial-gradient(circle at 10% 20%, rgba(41, 98, 255, 0.15) 0%, transparent 45%),
-        radial-gradient(circle at 90% 85%, rgba(0, 229, 255, 0.08) 0%, transparent 45%),
-        radial-gradient(circle at 50% 50%, rgba(30, 58, 138, 0.1) 0%, transparent 60%);
-      filter: blur(80px);
-      pointer-events: none;
+        radial-gradient(900px 650px at 52% 45%, rgba(29, 70, 255, .14), transparent 67%),
+        radial-gradient(650px 500px at 8% 95%, rgba(56, 108, 255, .12), transparent 68%),
+        #02030a;
     }
 
-    .app-container {
-      display: flex;
+    /* Frozen blue thorn atmosphere */
+    .ambient {
+      position: fixed;
+      inset: -15%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .ambient:before,
+    .ambient:after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 30% 40%, rgba(47, 103, 255, .14), transparent 26%),
+        radial-gradient(circle at 70% 58%, rgba(93, 178, 255, .08), transparent 24%);
+      filter: blur(65px);
+    }
+
+    .thorn {
+      position: absolute;
+      width: 430px;
+      height: 170px;
+      opacity: .14;
+      border: 1px solid rgba(83, 151, 255, .42);
+      border-left: 0;
+      border-bottom: 0;
+      transform: rotate(-19deg);
+      filter: blur(.2px) drop-shadow(0 0 18px rgba(50, 114, 255, .45));
+    }
+
+    .thorn:before,
+    .thorn:after {
+      content: "";
+      position: absolute;
+      width: 38px;
+      height: 38px;
+      border-left: 1px solid rgba(102, 190, 255, .6);
+      border-top: 1px solid rgba(102, 190, 255, .6);
+      transform: rotate(45deg);
+    }
+
+    .thorn:before {
+      left: 120px;
+      top: 36px
+    }
+
+    .thorn:after {
+      right: 75px;
+      bottom: 18px
+    }
+
+    .t1 {
+      left: -80px;
+      top: 18%;
+      transform: rotate(14deg) scale(1.2)
+    }
+
+    .t2 {
+      right: -100px;
+      bottom: 13%;
+      transform: rotate(-24deg) scale(.95)
+    }
+
+    .t3 {
+      left: 35%;
+      top: -100px;
+      transform: rotate(70deg) scale(.8);
+      opacity: .09
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
       width: 100%;
       height: 100%;
-      padding: 16px;
-      gap: 16px;
+      display: grid;
+      grid-template-columns: 270px minmax(0, 1fr);
+      gap: 14px;
+      padding: 14px;
     }
 
-    .glass-panel {
-      background: var(--glass-bg);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    .glass {
+      background: linear-gradient(145deg, rgba(12, 16, 33, .79), rgba(3, 6, 15, .72));
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, .045);
+      backdrop-filter: blur(26px) saturate(125%);
+      -webkit-backdrop-filter: blur(26px) saturate(125%);
     }
 
     .sidebar {
-      width: 340px;
+      min-width: 0;
+      overflow: hidden;
+      border-radius: var(--radius);
       display: flex;
       flex-direction: column;
-      padding: 24px 16px;
-      flex-shrink: 0;
+      padding: 18px 12px;
     }
 
-    .brand-header {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 28px;
-      padding: 0 8px;
+      gap: 11px;
+      padding: 4px 7px 19px;
     }
 
-    .brand-logo {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      object-fit: cover;
-      border: 1px solid rgba(41, 98, 255, 0.4);
-      box-shadow: 0 0 15px rgba(41, 98, 255, 0.3);
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid rgba(90, 145, 255, .48);
+      background: radial-gradient(circle at 35% 30%, #365fff, #070d2b 68%);
+      box-shadow: 0 0 26px rgba(48, 103, 255, .35);
+    }
+
+    .brand-mark i {
+      font-size: 21px;
+      color: #e9f3ff
     }
 
     .brand-title {
-      font-family: var(--font-serif);
-      font-size: 22px;
+      font-family: var(--serif);
       font-weight: 700;
-      background: linear-gradient(135deg, #FFFFFF, var(--thorn-cyan));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: 1px;
+      letter-spacing: .8px;
+      font-size: 17px
     }
 
-    .section-title {
-      font-size: 11px;
+    .brand-sub {
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 1.7px;
       text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      padding: 0 8px;
-      font-weight: 600;
+      margin-top: 3px
+    }
+
+    .side-label {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
+      color: #aeb8d0;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      padding: 0 8px 9px;
     }
 
-    .section-title::before {
-      content: '';
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      background: var(--thorn-cyan);
+    .side-label:before {
+      content: "";
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--thorn-cyan);
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
     }
 
     .model-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      overflow-y: auto;
+      overflow: auto;
       flex: 1;
-      padding: 4px;
+      padding: 1px 3px 8px
     }
 
-    ::-webkit-scrollbar {
-      width: 5px;
+    .model-list::-webkit-scrollbar {
+      width: 4px
     }
 
-    ::-webkit-scrollbar-track {
-      background: transparent;
+    .model-list::-webkit-scrollbar-thumb {
+      background: rgba(101, 139, 255, .2);
+      border-radius: 99px
     }
 
-    ::-webkit-scrollbar-thumb {
-      background: rgba(41, 98, 255, 0.2);
-      border-radius: 10px;
+    .provider {
+      margin-bottom: 13px
     }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(41, 98, 255, 0.4);
-    }
-
-    .provider-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .provider-header {
-      font-size: 11px;
+    .provider-name {
+      padding: 5px 8px;
+      font-size: 9px;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--thorn-cyan);
-      padding: 0 8px;
-      font-weight: 600;
-      opacity: 0.8;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      color: #65708a;
+      font-weight: 700;
     }
 
     .model-card {
+      position: relative;
+      width: 100%;
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.015);
-      border: 1px solid rgba(255, 255, 255, 0.04);
+      gap: 10px;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      background: transparent;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-align: left;
+      transition: .18s ease;
     }
 
     .model-card:hover {
-      background: rgba(41, 98, 255, 0.05);
-      border-color: rgba(41, 98, 255, 0.25);
+      background: rgba(72, 112, 255, .08);
+      border-color: rgba(93, 143, 255, .16)
     }
 
     .model-card.active {
-      background: rgba(41, 98, 255, 0.08);
-      border-color: var(--thorn-bright, #2962FF);
-      box-shadow:
-        0 0 20px rgba(41, 98, 255, 0.25),
-        inset 0 0 12px rgba(0, 229, 255, 0.1);
-    }
-
-    .model-icon-wrapper {
-      position: relative;
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: rgba(0, 0, 0, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      flex-shrink: 0;
+      background: linear-gradient(100deg, rgba(52, 99, 255, .16), rgba(55, 125, 255, .04));
+      border-color: rgba(82, 142, 255, .35);
+      box-shadow: inset 2px 0 0 var(--blue), 0 0 24px rgba(46, 91, 255, .1);
     }
 
     .model-icon {
-      width: 22px;
-      height: 22px;
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      border-radius: 10px;
       object-fit: contain;
-      border-radius: 4px;
+      padding: 6px;
+      background: rgba(0, 0, 0, .42);
+      border: 1px solid rgba(255, 255, 255, .07);
     }
 
-    .model-card.active .model-icon-wrapper {
-      box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
-      border-color: var(--thorn-cyan);
+    .model-card.active .model-icon {
+      border-color: rgba(95, 184, 255, .55);
+      box-shadow: 0 0 15px rgba(62, 138, 255, .23)
     }
 
-    .model-info {
-      flex: 1;
+    .model-copy {
       min-width: 0;
+      flex: 1
     }
 
     .model-name {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipsis;
+      text-overflow: ellipsis
     }
 
-    .badge {
-      font-size: 8px;
-      padding: 2px 5px;
-      border-radius: 4px;
-      background: rgba(41, 98, 255, 0.15);
-      color: var(--thorn-cyan);
-      border: 1px solid rgba(41, 98, 255, 0.3);
-      text-transform: uppercase;
-      flex-shrink: 0;
-    }
-
-    .model-card.active .badge {
-      background: rgba(0, 229, 255, 0.15);
-      color: #FFFFFF;
-      border: 1px solid rgba(0, 229, 255, 0.5);
-    }
-
-    .model-id-sub {
-      font-size: 11px;
-      color: var(--text-muted);
+    .model-id {
+      font-size: 9px;
+      color: #68738b;
       margin-top: 3px;
       white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipsis;
+      text-overflow: ellipsis
+    }
+
+    .model-badge {
+      font-size: 7px;
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      color: #8ecfff;
+      border: 1px solid rgba(89, 162, 255, .22);
+      padding: 3px 5px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .side-footer {
+      border-top: 1px solid rgba(255, 255, 255, .05);
+      padding-top: 10px
+    }
+
+    .side-action {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #9aa4ba;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 11px;
+      text-align: left;
+    }
+
+    .side-action:hover {
+      background: rgba(255, 255, 255, .035);
+      color: white
+    }
+
+    .side-action i {
+      font-size: 15px
     }
 
     .workspace {
-      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      border-radius: var(--radius);
       display: flex;
       flex-direction: column;
       position: relative;
       overflow: hidden;
     }
 
-    .workspace-header {
-      padding: 22px 24px;
-      border-bottom: 1px solid var(--glass-border);
+    .topbar {
+      height: 72px;
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
-      background: rgba(3, 5, 8, 0.3);
+      padding: 12px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, .055);
+      background: rgba(2, 4, 11, .35);
     }
 
-    .current-model-display {
+    .current {
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 10px;
+      min-width: 0;
+      cursor: pointer;
+      padding: 5px 9px;
+      border-radius: 13px;
     }
 
-    .current-model-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      border: 1px solid rgba(41, 98, 255, 0.3);
-      background: rgba(0, 0, 0, 0.6);
+    .current:hover {
+      background: rgba(255, 255, 255, .035)
+    }
+
+    .current-icon {
+      width: 35px;
+      height: 35px;
+      border-radius: 10px;
       padding: 6px;
       object-fit: contain;
-      box-shadow: 0 0 15px rgba(41, 98, 255, 0.2);
+      background: #030611;
+      border: 1px solid rgba(98, 157, 255, .25)
     }
 
-    .current-model-text h2 {
-      font-family: var(--font-serif);
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 3px;
-      letter-spacing: 0.5px;
+    .current-copy {
+      min-width: 0
     }
 
-    .current-model-text p {
+    .current-name {
       font-size: 12px;
-      color: var(--text-muted);
+      font-weight: 700
     }
 
-    .chat-area {
+    .current-meta {
+      font-size: 9px;
+      color: #727d94;
+      margin-top: 2px
+    }
+
+    .chev {
+      font-size: 13px;
+      color: #75819a;
+      margin-left: 3px
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #8791a7;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, .045);
+      color: white;
+      border-color: rgba(255, 255, 255, .07)
+    }
+
+    .icon-btn i {
+      font-size: 16px
+    }
+
+    .chat {
+      position: relative;
       flex: 1;
-      padding: 24px;
-      overflow-y: auto;
+      overflow: auto;
+      padding: 32px clamp(16px, 7vw, 90px) 130px;
+      scroll-behavior: smooth;
+    }
+
+    .chat::-webkit-scrollbar {
+      width: 5px
+    }
+
+    .chat::-webkit-scrollbar-thumb {
+      background: rgba(98, 131, 220, .17);
+      border-radius: 99px
+    }
+
+    .welcome {
+      min-height: 100%;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 30px 0 50px;
+    }
+
+    .welcome-symbol {
+      width: 70px;
+      height: 70px;
+      border-radius: 23px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(93, 152, 255, .35);
+      background: radial-gradient(circle at 40% 35%, rgba(62, 112, 255, .38), rgba(5, 10, 31, .82) 70%);
+      box-shadow: 0 0 45px rgba(41, 93, 255, .2), inset 0 0 30px rgba(82, 151, 255, .08);
+      position: relative;
+    }
+
+    .welcome-symbol:before,
+    .welcome-symbol:after {
+      content: "";
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border: 1px solid rgba(95, 176, 255, .38);
+      transform: rotate(45deg);
+    }
+
+    .welcome-symbol:before {
+      left: -11px;
+      top: 25px
+    }
+
+    .welcome-symbol:after {
+      right: -11px;
+      bottom: 24px
+    }
+
+    .welcome-symbol i {
+      font-size: 29px;
+      color: #dcecff
+    }
+
+    .welcome h1 {
+      font-family: var(--serif);
+      font-size: clamp(22px, 4vw, 33px);
+      margin: 22px 0 9px;
+      letter-spacing: .8px
+    }
+
+    .welcome p {
+      max-width: 500px;
+      color: #727e98;
+      font-size: 12px;
+      line-height: 1.7;
+      margin: 0
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(120px, 1fr));
+      gap: 8px;
+      margin-top: 25px;
+      width: min(520px, 100%)
+    }
+
+    .quick {
+      text-align: left;
+      padding: 12px;
+      border-radius: 13px;
+      border: 1px solid rgba(255, 255, 255, .065);
+      background: rgba(255, 255, 255, .018);
+      color: #9ca6bc;
+      cursor: pointer;
+      font-size: 10px;
+    }
+
+    .quick:hover {
+      border-color: rgba(84, 145, 255, .3);
+      background: rgba(58, 104, 255, .07);
+      color: #dbe8ff
+    }
+
+    .quick i {
+      display: block;
+      font-size: 16px;
+      color: #79aaff;
+      margin-bottom: 7px
     }
 
     .message {
       display: flex;
-      gap: 14px;
-      max-width: 85%;
+      gap: 10px;
+      max-width: 850px;
+      margin: 0 auto 20px;
+      animation: up .22s ease
     }
 
-    .message.ai {
-      align-self: flex-start;
+    @keyframes up {
+      from {
+        opacity: 0;
+        transform: translateY(6px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
     }
 
     .message.user {
-      align-self: flex-end;
-      flex-direction: row-reverse;
+      justify-content: flex-end
     }
 
     .avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--glass-border);
-      background: var(--glass-bg);
-      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: #050a18;
+      border: 1px solid rgba(91, 143, 255, .2);
     }
 
     .avatar img {
-      width: 20px;
-      height: 20px;
-      object-fit: contain;
+      width: 19px;
+      height: 19px;
+      object-fit: contain
     }
 
-    .message-bubble {
-      padding: 14px 18px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--glass-border);
-      line-height: 1.6;
-      font-size: 14px;
+    .bubble {
+      max-width: min(720px, 82vw);
+      padding: 11px 14px;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, .065);
+      background: rgba(255, 255, 255, .025);
+      color: #d7dcea;
+      font-size: 12px;
+      line-height: 1.65;
+      white-space: pre-wrap;
     }
 
-    .message.user .message-bubble {
-      background: rgba(41, 98, 255, 0.08);
-      border-color: rgba(41, 98, 255, 0.3);
-      border-bottom-right-radius: 4px;
+    .user .bubble {
+      background: linear-gradient(135deg, rgba(49, 91, 255, .19), rgba(43, 77, 173, .09));
+      border-color: rgba(78, 129, 255, .25);
+      border-bottom-right-radius: 5px;
     }
 
-    .message.ai .message-bubble {
-      background: rgba(0, 34, 102, 0.15);
-      border: 1px solid rgba(0, 229, 255, 0.2);
-      border-bottom-left-radius: 4px;
-      box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.03);
+    .ai .bubble {
+      border-bottom-left-radius: 5px
     }
 
-    .input-region {
-      padding: 20px 24px 24px 24px;
+    .composer-wrap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 12px clamp(12px, 5vw, 70px) 17px;
+      background: linear-gradient(transparent, rgba(2, 3, 10, .92) 25%, rgba(2, 3, 10, .98));
+    }
+
+    .composer {
       position: relative;
-    }
-
-    .input-glass-container {
+      max-width: 850px;
+      margin: auto;
       display: flex;
       align-items: flex-end;
-      gap: 12px;
-      background: rgba(5, 8, 15, 0.7);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(41, 98, 255, 0.2);
-      border-radius: 20px;
-      padding: 12px 16px;
-      transition: all 0.3s ease;
+      gap: 8px;
+      padding: 8px 9px 8px 12px;
+      border-radius: 19px;
+      background: rgba(7, 10, 22, .88);
+      border: 1px solid rgba(83, 129, 255, .2);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .035);
+      transition: .2s ease;
     }
 
-    .input-glass-container.focused {
-      border-color: var(--thorn-cyan);
-      box-shadow:
-        0 0 25px rgba(0, 229, 255, 0.25),
-        inset 0 0 15px rgba(41, 98, 255, 0.15);
+    .composer:focus-within {
+      border-color: rgba(83, 155, 255, .65);
+      box-shadow: 0 0 0 1px rgba(78, 129, 255, .08), 0 0 35px rgba(41, 91, 255, .15), 0 18px 50px rgba(0, 0, 0, .5)
     }
 
-    .input-glass-container textarea {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      font-size: 14px;
-      resize: none;
-      height: 42px;
-      max-height: 150px;
-      line-height: 22px;
-      padding: 10px 0;
-    }
-
-    .input-glass-container textarea:focus {
-      outline: none;
-    }
-
-    .input-glass-container textarea::placeholder {
-      color: rgba(126, 141, 159, 0.5);
-    }
-
-    .send-btn {
-      background: linear-gradient(135deg, var(--thorn-blue-bright), var(--thorn-cyan));
-      color: #030508;
-      border: none;
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
+    .compose-left {
       display: flex;
       align-items: center;
-      justify-content: center;
+      padding-bottom: 3px
+    }
+
+    .attach {
+      width: 32px;
+      height: 32px;
+      border: 0;
+      background: transparent;
+      color: #66718a;
       cursor: pointer;
-      flex-shrink: 0;
-      box-shadow: 0 4px 15px rgba(41, 98, 255, 0.4);
-      transition: all 0.2s ease;
+      border-radius: 10px;
     }
 
-    .send-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 229, 255, 0.6);
+    .attach:hover {
+      background: rgba(255, 255, 255, .04);
+      color: #b8d6ff
     }
 
-    .send-btn i {
+    textarea {
+      flex: 1;
+      min-width: 0;
+      resize: none;
+      height: 40px;
+      max-height: 140px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #eef3ff;
+      line-height: 20px;
+      font-size: 12px;
+      padding: 10px 2px;
+    }
+
+    textarea::placeholder {
+      color: #5e687e
+    }
+
+    .send {
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 12px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      color: #06102b;
+      background: linear-gradient(135deg, #dceaff, #63b8ff 45%, #4c70ff);
+      box-shadow: 0 0 20px rgba(67, 126, 255, .32);
+    }
+
+    .send:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08)
+    }
+
+    .send i {
+      font-size: 16px
+    }
+
+    .composer-note {
+      max-width: 850px;
+      margin: 7px auto 0;
+      text-align: center;
+      color: #3f485b;
+      font-size: 8px;
+      letter-spacing: .2px
+    }
+
+    /* Radial model selector */
+    .model-orb {
+      position: absolute;
+      left: 50%;
+      bottom: 17px;
+      transform: translateX(-50%);
+      z-index: 20;
+    }
+
+    .orb-button {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid rgba(118, 177, 255, .6);
+      background: radial-gradient(circle at 34% 28%, #638dff, #0d1747 60%, #050816);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: 0 0 0 5px rgba(62, 112, 255, .05), 0 0 28px rgba(54, 111, 255, .35);
+      transition: .25s ease;
+    }
+
+    .orb-button:hover,
+    .model-orb.open .orb-button {
+      box-shadow: 0 0 0 6px rgba(71, 124, 255, .08), 0 0 38px rgba(63, 128, 255, .55)
+    }
+
+    .orb-button i {
+      font-size: 15px
+    }
+
+    .model-orb.open .orb-button {
+      transform: rotate(45deg)
+    }
+
+    .model-menu {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translate(-50%, 10px) scale(.96);
+      width: min(430px, calc(100vw - 28px));
+      max-height: 390px;
+      overflow: auto;
+      padding: 10px;
+      border-radius: 19px;
+      background: rgba(6, 9, 21, .93);
+      border: 1px solid rgba(91, 148, 255, .32);
+      backdrop-filter: blur(30px);
+      box-shadow: 0 25px 80px rgba(0, 0, 0, .72), 0 0 40px rgba(43, 93, 255, .17);
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s ease;
+      transform-origin: bottom center;
+    }
+
+    .model-orb.open .model-menu {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, 0) scale(1)
+    }
+
+    .menu-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 5px 9px
+    }
+
+    .menu-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #9aa6bf;
+      font-weight: 700
+    }
+
+    .menu-search {
+      width: 100%;
+      height: 33px;
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, .025);
+      outline: 0;
+      color: white;
+      padding: 0 10px;
+      font-size: 10px;
+      margin-bottom: 8px;
+    }
+
+    .menu-search:focus {
+      border-color: rgba(87, 145, 255, .5)
+    }
+
+    .menu-models {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px
+    }
+
+    .model-option {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, .018);
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .model-option:hover {
+      background: rgba(67, 111, 255, .09);
+      border-color: rgba(83, 142, 255, .22)
+    }
+
+    .model-option.selected {
+      background: rgba(56, 107, 255, .14);
+      border-color: rgba(85, 149, 255, .4)
+    }
+
+    .option-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      padding: 4px;
+      object-fit: contain;
+      background: #02050d;
+      border: 1px solid rgba(255, 255, 255, .06);
+      flex: 0 0 28px
+    }
+
+    .option-copy {
+      min-width: 0;
+      flex: 1
+    }
+
+    .option-name {
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .option-provider {
+      font-size: 8px;
+      color: #68738b;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .option-check {
+      color: #73bfff;
+      font-size: 13px;
+      display: none
+    }
+
+    .selected .option-check {
+      display: block
+    }
+
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 15;
+      display: none
+    }
+
+    .model-orb.open+.backdrop {
+      display: block
+    }
+
+    /* Settings */
+    .modal-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      place-items: center;
+      background: rgba(0, 0, 0, .55);
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-layer.show {
+      display: grid
+    }
+
+    .modal {
+      width: min(520px, calc(100vw - 28px));
+      max-height: 80vh;
+      overflow: auto;
+      border-radius: 22px;
+      padding: 18px;
+      background: rgba(7, 10, 22, .95);
+      border: 1px solid rgba(88, 143, 255, .27);
+      box-shadow: 0 30px 100px rgba(0, 0, 0, .7);
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px
+    }
+
+    .modal h2 {
+      font-family: var(--serif);
       font-size: 18px;
-      font-weight: bold;
+      margin: 0
+    }
+
+    .setting {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 13px 0;
+      border-top: 1px solid rgba(255, 255, 255, .055)
+    }
+
+    .setting strong {
+      font-size: 11px
+    }
+
+    .setting p {
+      margin: 4px 0 0;
+      color: #69748b;
+      font-size: 9px;
+      line-height: 1.5
+    }
+
+    .toggle {
+      width: 39px;
+      height: 23px;
+      border-radius: 99px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      background: #111626;
+      padding: 3px;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .toggle:after {
+      content: "";
+      display: block;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #69748b;
+      transition: .2s
+    }
+
+    .toggle.on {
+      background: #245cff;
+      border-color: #5e9dff
+    }
+
+    .toggle.on:after {
+      transform: translateX(16px);
+      background: white
+    }
+
+    /* iPad / narrow layout */
+    @media(max-width:800px) {
+      .app {
+        grid-template-columns: 1fr;
+        padding: 8px
+      }
+
+      .sidebar {
+        display: none
+      }
+
+      .workspace {
+        border-radius: 19px
+      }
+
+      .topbar {
+        height: 62px;
+        padding: 10px 11px
+      }
+
+      .chat {
+        padding-left: 12px;
+        padding-right: 12px;
+        padding-top: 24px
+      }
+
+      .composer-wrap {
+        padding-left: 10px;
+        padding-right: 10px
+      }
+
+      .menu-models {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media(max-width:520px) {
+      .welcome h1 {
+        font-size: 23px
+      }
+
+      .quick-grid {
+        grid-template-columns: 1fr
+      }
+
+      .current-meta {
+        display: none
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        scroll-behavior: auto !important;
+        animation: none !important;
+        transition: none !important
+      }
     }
   </style>
 </head>
 
 <body>
+  <div class="ambient" aria-hidden="true">
+    <span class="thorn t1"></span><span class="thorn t2"></span><span class="thorn t3"></span>
+  </div>
 
-  <div class="ambient-mesh"></div>
-
-  <div class="app-container">
-
-    <aside class="glass-panel sidebar">
-      <div class="brand-header">
-        <img src="web.png" alt="Calyx" class="brand-logo">
-        <div class="brand-title">Calyx Studio</div>
+  <div class="app">
+    <aside class="sidebar glass">
+      <div class="brand">
+        <div class="brand-mark"><i class="ph ph-sparkle"></i></div>
+        <div>
+          <div class="brand-title">Calyx Studio</div>
+          <div class="brand-sub">Thorn intelligence</div>
+        </div>
       </div>
 
-      <h2 class="section-title">Thorn Matrix</h2>
+      <div class="side-label">Model matrix</div>
+      <div id="modelList" class="model-list"></div>
 
-      <div id="model-list" class="model-list">
+      <div class="side-footer">
+        <button class="side-action" id="newChat"><i class="ph ph-plus"></i><span>New chat</span></button>
+        <button class="side-action" id="settingsBtn"><i class="ph ph-sliders-horizontal"></i><span>Studio settings</span></button>
       </div>
     </aside>
 
-    <main class="glass-panel workspace">
-      <header class="workspace-header">
-        <div class="current-model-display" id="current-model-header">
+    <main class="workspace glass">
+      <header class="topbar">
+        <button class="current" id="currentModelBtn" aria-label="Open model selector">
+        <img id="currentIcon" class="current-icon" alt="">
+        <div class="current-copy">
+          <div id="currentName" class="current-name">Loading model…</div>
+          <div id="currentMeta" class="current-meta">Select an intelligence</div>
         </div>
+        <i class="ph ph-caret-down chev"></i>
+      </button>
 
-        <div style="display: flex; gap: 12px;">
-          <div class="avatar"><i class="ph ph-sliders text-muted"></i></div>
+        <div class="top-actions">
+          <button class="icon-btn" id="clearChat" title="Clear chat"><i class="ph ph-broom"></i></button>
+          <button class="icon-btn" id="settingsTop" title="Settings"><i class="ph ph-sliders-horizontal"></i></button>
         </div>
       </header>
 
-      <div class="chat-area" id="chat-area">
-        <div class="message ai">
-          <div class="avatar" id="chat-ai-avatar">
-            <i class="ph ph-flower-lotus" style="color: var(--thorn-cyan)"></i>
-          </div>
-          <div class="message-bubble">
-            Calyx network active. Select a model variant from the thorn matrix to deploy intelligence parameters.
+      <section class="chat" id="chat">
+        <div class="welcome" id="welcome">
+          <div class="welcome-symbol"><i class="ph ph-sparkle"></i></div>
+          <h1>Intelligence, sharpened.</h1>
+          <p>A quiet workspace for building, researching and creating with your chosen AI. The thorn matrix keeps every
+            model close without covering the canvas.</p>
+          <div class="quick-grid">
+            <button class="quick" data-prompt="Help me plan a new project"><i class="ph ph-compass"></i>Plan a project</button>
+            <button class="quick" data-prompt="Write a clean implementation for this idea"><i class="ph ph-code"></i>Write code</button>
+            <button class="quick" data-prompt="Research this topic and organize the key findings"><i class="ph ph-magnifying-glass"></i>Research</button>
+            <button class="quick" data-prompt="Turn this rough idea into a polished concept"><i class="ph ph-sparkle"></i>Refine an idea</button>
           </div>
         </div>
-      </div>
+        <div id="messages"></div>
+      </section>
 
-      <div class="input-region">
-        <div class="input-glass-container" id="input-wrapper">
-          <i class="ph ph-plant" style="color: rgba(41, 98, 255, 0.5); font-size: 20px; padding-bottom: 10px;"></i>
-          <textarea id="prompt-input" placeholder="Inject instructions or execute query..."></textarea>
-          <button class="send-btn">
-                        <i class="ph ph-arrow-up"></i>
-                    </button>
+      <div class="composer-wrap">
+        <div class="composer">
+          <div class="compose-left">
+            <button class="attach" id="attachBtn" title="Attach"><i class="ph ph-paperclip"></i></button>
+          </div>
+          <textarea id="prompt" rows="1" placeholder="Ask Calyx anything…"></textarea>
+          <button class="send" id="sendBtn" title="Send"><i class="ph ph-arrow-up"></i></button>
+
+          <div class="model-orb" id="modelOrb">
+            <div class="model-menu" id="modelMenu">
+              <div class="menu-head">
+                <div class="menu-title">Choose intelligence</div>
+                <span id="modelCount" style="font-size:8px;color:#566078"></span>
+              </div>
+              <input id="modelSearch" class="menu-search" type="search" placeholder="Search models or providers…">
+              <div id="menuModels" class="menu-models"></div>
+            </div>
+            <button class="orb-button" id="orbButton" aria-label="Choose AI model" title="Choose AI model">
+            <i class="ph ph-sparkle"></i>
+          </button>
+          </div>
         </div>
+        <div class="composer-note">Calyx Studio · Responses depend on the selected model and your connected API
+          configuration.</div>
       </div>
     </main>
   </div>
 
+  <div class="backdrop" id="backdrop"></div>
+
+  <div class="modal-layer" id="settingsModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Studio settings</h2>
+        <button class="icon-btn" id="closeSettings"><i class="ph ph-x"></i></button>
+      </div>
+
+      <div class="setting">
+        <div><strong>Compact interface</strong>
+          <p>Reduce spacing and visual ornamentation for smaller screens.</p>
+        </div>
+        <button class="toggle" data-setting="compact"></button>
+      </div>
+      <div class="setting">
+        <div><strong>Reduce motion</strong>
+          <p>Disable most interface animations.</p>
+        </div>
+        <button class="toggle" data-setting="motion"></button>
+      </div>
+      <div class="setting">
+        <div><strong>Remember selected model</strong>
+          <p>Keep the current model in this browser.</p>
+        </div>
+        <button class="toggle on" data-setting="remember"></button>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="fileInput" hidden multiple>
+
   <script type="module">
-    import { models } from './models.js';
+    const FALLBACK_MODELS = [
+  {id:"moonshotai/kimi-k3",name:"Kimi K3",provider:"Moonshot AI",description:"Reasoning and code generation",badge:"Ready",logoUrl:"https://openrouter.ai/images/icons/Kimi.png"},
+  {id:"anthropic/claude-sonnet",name:"Claude Sonnet",provider:"Anthropic",description:"Balanced intelligence",badge:"Ready",logoUrl:"https://openrouter.ai/images/icons/Claude.png"},
+  {id:"openai/gpt-4o",name:"GPT-4o",provider:"OpenAI",description:"General purpose multimodal model",badge:"Ready",logoUrl:"https://openrouter.ai/images/icons/OpenAI.png"},
+  {id:"google/gemini-2.5-pro",name:"Gemini 2.5 Pro",provider:"Google",description:"Advanced reasoning",badge:"Ready",logoUrl:"https://openrouter.ai/images/icons/Gemini.png"}
+];
 
-        // Safe unique fallback identification using index and id
-        let currentModel = models[0];
+let models = FALLBACK_MODELS;
+try {
+  const registry = await import("./models.js");
+  if (Array.isArray(registry.models) && registry.models.length) models = registry.models;
+} catch (_) {}
 
-        const modelListEl = document.getElementById('model-list');
-        const headerEl = document.getElementById('current-model-header');
-        const aiAvatarEl = document.getElementById('chat-ai-avatar');
+const $ = id => document.getElementById(id);
+let currentIndex = Number(localStorage.getItem("calyx:modelIndex") || 0);
+if (!Number.isInteger(currentIndex) || currentIndex < 0 || currentIndex >= models.length) currentIndex = 0;
+let currentModel = models[currentIndex];
+let messages = [];
 
-        function renderModels() {
-            modelListEl.innerHTML = '';
-            
-            // Group models dynamically by provider to handle multiple models from the same company seamlessly
-            const groupedModels = {};
-            models.forEach((model, index) => {
-                const providerKey = model.provider || "General";
-                if (!groupedModels[providerKey]) {
-                    groupedModels[providerKey] = [];
-                }
-                // Attach unique reference index to safeguard against identical IDs/keys
-                groupedModels[providerKey].push({ ...model, _globalIndex: index });
-            });
+const safe = value => String(value ?? "").replace(/[&<>"']/g, ch => ({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+}[ch]));
 
-            Object.keys(groupedModels).forEach(provider => {
-                const groupContainer = document.createElement('div');
-                groupContainer.className = 'provider-group';
+function logo(model){
+  return model.logoUrl || model.logo || "https://openrouter.ai/images/icons/OpenRouter.png";
+}
 
-                const groupHeader = document.createElement('div');
-                groupHeader.className = 'provider-header';
-                groupHeader.innerHTML = `<i class="ph ph-git-commit" style="font-size: 10px;"></i> ${provider}`;
-                groupContainer.appendChild(groupHeader);
+function setCurrent(index){
+  currentIndex = index;
+  currentModel = models[index];
+  if ($("[data-setting='remember']").classList.contains("on")) localStorage.setItem("calyx:modelIndex", index);
+  $("currentIcon").src = logo(currentModel);
+  $("currentIcon").alt = currentModel.name || "Model";
+  $("currentName").textContent = currentModel.name || currentModel.id;
+  $("currentMeta").textContent = `${currentModel.provider || "General"} · ${currentModel.badge || "Ready"}`;
+  renderSidebar();
+  renderMenu($("modelSearch").value);
+  if (messages.length === 0) updateWelcomeText();
+}
 
-                groupedModels[provider].forEach(model => {
-                    const isSelected = currentModel._globalIndex === model._globalIndex;
-                    const card = document.createElement('div');
-                    card.className = `model-card ${isSelected ? 'active' : ''}`;
-                    
-                    card.innerHTML = `
-                        <div class="model-icon-wrapper">
-                            <img src="${model.logoUrl}" class="model-icon" alt="${model.provider}">
-                        </div>
-                        <div class="model-info">
-                            <div class="model-name">
-                                <span>${model.name}</span>
-                                <span class="badge">${model.badge || 'Ready'}</span>
-                            </div>
-                            <div class="model-id-sub">${model.id}</div>
-                        </div>
-                    `;
-                    
-                    card.addEventListener('click', () => {
-                        currentModel = model;
-                        renderModels();
-                        updateWorkspace();
-                    });
-                    
-                    groupContainer.appendChild(card);
-                });
+function updateWelcomeText(){
+  const p = $("welcome").querySelector("p");
+  if (p) p.textContent = `${currentModel.name || "Your model"} is selected. Choose a prompt below or start writing in the composer.`;
+}
 
-                modelListEl.appendChild(groupContainer);
-            });
-        }
+function renderSidebar(){
+  const groups = {};
+  models.forEach((m,i) => {
+    const key = m.provider || "General";
+    (groups[key] ||= []).push({m,i});
+  });
+  $("modelList").innerHTML = Object.entries(groups).map(([provider,items]) => `
+    <div class="provider">
+      <div class="provider-name">${safe(provider)}</div>
+      ${items.map(({m,i}) => `
+        <button class="model-card ${i===currentIndex?"active":""}" data-index="${i}">
+          <img class="model-icon" src="${safe(logo(m))}" alt="">
+          <span class="model-copy">
+            <span class="model-name">${safe(m.name || m.id)}</span>
+            <span class="model-id">${safe(m.id)}</span>
+          </span>
+          <span class="model-badge">${safe(m.badge || "Ready")}</span>
+        </button>`).join("")}
+    </div>`).join("");
 
-        function updateWorkspace() {
-            headerEl.innerHTML = `
-                <img src="${currentModel.logoUrl}" class="current-model-icon" alt="${currentModel.name}">
-                <div class="current-model-text">
-                    <h2>${currentModel.name}</h2>
-                    <p>${currentModel.description || currentModel.id}</p>
-                </div>
-            `;
-            
-            aiAvatarEl.innerHTML = `<img src="${currentModel.logoUrl}" alt="${currentModel.name}">`;
-        }
+  $("modelList").querySelectorAll(".model-card").forEach(btn => {
+    btn.addEventListener("click", () => setCurrent(Number(btn.dataset.index)));
+  });
+}
 
-        const textarea = document.getElementById('prompt-input');
-        const inputWrapper = document.getElementById('input-wrapper');
+function renderMenu(filter=""){
+  const q = filter.trim().toLowerCase();
+  const found = models.map((m,i)=>({m,i})).filter(({m}) =>
+    !q || `${m.name} ${m.provider} ${m.id}`.toLowerCase().includes(q)
+  );
+  $("modelCount").textContent = `${found.length} model${found.length===1?"":"s"}`;
+  $("menuModels").innerHTML = found.length ? found.map(({m,i}) => `
+    <button class="model-option ${i===currentIndex?"selected":""}" data-index="${i}">
+      <img class="option-logo" src="${safe(logo(m))}" alt="">
+      <span class="option-copy">
+        <span class="option-name">${safe(m.name || m.id)}</span>
+        <span class="option-provider">${safe(m.provider || "General")}</span>
+      </span>
+      <i class="ph ph-check option-check"></i>
+    </button>`).join("") :
+    `<div style="grid-column:1/-1;padding:22px;text-align:center;color:#68738b;font-size:10px">No matching models.</div>`;
 
-        textarea.addEventListener('focus', () => {
-            inputWrapper.classList.add('focused');
-        });
+  $("menuModels").querySelectorAll(".model-option").forEach(btn => {
+    btn.addEventListener("click", () => {
+      setCurrent(Number(btn.dataset.index));
+      closeModelMenu();
+    });
+  });
+}
 
-        textarea.addEventListener('blur', () => {
-            inputWrapper.classList.remove('focused');
-        });
+function openModelMenu(){
+  $("modelOrb").classList.add("open");
+  $("modelSearch").focus();
+}
+function closeModelMenu(){
+  $("modelOrb").classList.remove("open");
+  $("modelSearch").value="";
+  renderMenu();
+}
 
-        if(models && models.length > 0) {
-            // Assign default tracking index to initial model
-            currentModel = { ...models[0], _globalIndex: 0 };
-            renderModels();
-            updateWorkspace();
-        }
+$("orbButton").addEventListener("click", e => {
+  e.stopPropagation();
+  $("modelOrb").classList.contains("open") ? closeModelMenu() : openModelMenu();
+});
+$("currentModelBtn").addEventListener("click", () => {
+  $("modelOrb").classList.contains("open") ? closeModelMenu() : openModelMenu();
+});
+$("backdrop").addEventListener("click", closeModelMenu);
+$("modelSearch").addEventListener("input", e => renderMenu(e.target.value));
+
+function autoSize(){
+  const t=$("prompt");
+  t.style.height="40px";
+  t.style.height=Math.min(t.scrollHeight,140)+"px";
+}
+$("prompt").addEventListener("input",autoSize);
+
+function addMessage(role,text){
+  messages.push({role,text});
+  $("welcome").style.display="none";
+  const row=document.createElement("div");
+  row.className=`message ${role}`;
+  row.innerHTML = role==="ai"
+    ? `<div class="avatar"><img src="${safe(logo(currentModel))}" alt=""></div><div class="bubble">${safe(text)}</div>`
+    : `<div class="bubble">${safe(text)}</div>`;
+  $("messages").appendChild(row);
+  $("chat").scrollTop=$("chat").scrollHeight;
+}
+
+function send(){
+  const value=$("prompt").value.trim();
+  if(!value) return;
+  addMessage("user",value);
+  $("prompt").value="";
+  autoSize();
+
+  // UI-only response placeholder: connect this point to your existing API layer.
+  setTimeout(() => {
+    addMessage("ai",`"${currentModel.name || currentModel.id}" is selected. Connect your existing OpenRouter/API request handler here to return the live response.`);
+  },260);
+}
+
+$("sendBtn").addEventListener("click",send);
+$("prompt").addEventListener("keydown",e=>{
+  if(e.key==="Enter" && !e.shiftKey){e.preventDefault();send();}
+});
+
+$("newChat").addEventListener("click",()=>{
+  messages=[];
+  $("messages").innerHTML="";
+  $("welcome").style.display="flex";
+  updateWelcomeText();
+  $("prompt").focus();
+});
+$("clearChat").addEventListener("click",()=>{
+  messages=[];
+  $("messages").innerHTML="";
+  $("welcome").style.display="flex";
+  updateWelcomeText();
+});
+
+document.querySelectorAll(".quick").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    $("prompt").value=btn.dataset.prompt;
+    autoSize();
+    $("prompt").focus();
+  });
+});
+
+$("attachBtn").addEventListener("click",()=>$("fileInput").click());
+$("fileInput").addEventListener("change",e=>{
+  const names=[...e.target.files].map(f=>f.name);
+  if(names.length){
+    $("prompt").value += `${$("prompt").value ? "\n" : ""}[Attached: ${names.join(", ")}]`;
+    autoSize();
+  }
+});
+
+function showSettings(){ $("settingsModal").classList.add("show"); }
+function hideSettings(){ $("settingsModal").classList.remove("show"); }
+$("settingsBtn").addEventListener("click",showSettings);
+$("settingsTop").addEventListener("click",showSettings);
+$("closeSettings").addEventListener("click",hideSettings);
+$("settingsModal").addEventListener("click",e=>{if(e.target===$("settingsModal"))hideSettings();});
+
+document.querySelectorAll(".toggle").forEach(toggle=>{
+  toggle.addEventListener("click",()=>{
+    const key=toggle.dataset.setting;
+    toggle.classList.toggle("on");
+    localStorage.setItem(`calyx:${key}`,toggle.classList.contains("on")?"1":"0");
+    if(key==="compact") document.body.classList.toggle("compact",toggle.classList.contains("on"));
+    if(key==="motion") document.documentElement.style.setProperty("--motion",toggle.classList.contains("on")?"0":"1");
+  });
+  const key=toggle.dataset.setting;
+  if(localStorage.getItem(`calyx:${key}`)==="1") toggle.classList.add("on");
+});
+
+if(localStorage.getItem("calyx:compact")==="1") document.body.classList.add("compact");
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){
+    closeModelMenu();hideSettings();
+  }
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==="k"){
+    e.preventDefault();openModelMenu();
+  }
+});
+
+setCurrent(currentIndex);
   </script>
 </body>
 
