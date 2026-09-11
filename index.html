@@ -3,41 +3,37 @@
 
 <head>
   <meta charset="UTF-8">
-  <!-- iPad Optimization: Prevents zooming and locks scale -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Calyx Studio</title>
 
-  <!-- Tab Icon -->
   <link rel="icon" href="web.png">
 
-  <!-- Hybrid Editorial Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
     rel="stylesheet">
 
-  <!-- Phosphor Icons (Refractive 3D Glass Iconography Support) -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
   <style>
-    /* Base Variables - Luminescent Obsidian */
     :root {
-      --bg-canvas: #050507;
-      --text-primary: #E1E1E6;
-      --text-muted: #8A8A93;
+      --bg-canvas: #030508;
+      --text-primary: #ECEFF4;
+      --text-muted: #7E8D9F;
 
-      --glass-bg: rgba(255, 255, 255, 0.03);
-      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-bg: rgba(10, 15, 25, 0.65);
+      --glass-border: rgba(41, 98, 255, 0.15);
 
-      --copper-primary: #D47A47;
-      --copper-secondary: #E89A5D;
+      --thorn-blue-deep: #002266;
+      --thorn-blue-bright: #2962FF;
+      --thorn-cyan: #00E5FF;
 
-      --neon-blue-primary: #0066FF;
-      --neon-blue-secondary: #00D2FF;
+      --rose-accent: #1E3A8A;
+      --rose-glow: #3B82F6;
 
-      --font-serif: 'Playfair Display', serif;
-      --font-sans: 'Inter', sans-serif;
+      --font-serif: 'Cinzel', serif;
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
     }
 
     * {
@@ -57,7 +53,6 @@
       display: flex;
     }
 
-    /* 1. Canvas & Dual-Tone Atmosphere (Passive Warmth) */
     .ambient-mesh {
       position: absolute;
       top: 0;
@@ -66,13 +61,13 @@
       height: 100%;
       z-index: -1;
       background:
-        radial-gradient(circle at 15% 30%, rgba(212, 122, 71, 0.12) 0%, transparent 40%),
-        radial-gradient(circle at 85% 80%, rgba(232, 154, 93, 0.08) 0%, transparent 40%);
-      filter: blur(60px);
+        radial-gradient(circle at 10% 20%, rgba(41, 98, 255, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 90% 85%, rgba(0, 229, 255, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(30, 58, 138, 0.1) 0%, transparent 60%);
+      filter: blur(80px);
       pointer-events: none;
     }
 
-    /* Layout */
     .app-container {
       display: flex;
       width: 100%;
@@ -81,19 +76,17 @@
       gap: 16px;
     }
 
-    /* 2. Materiality & Glass Optics (Dark Frosted Glass) */
     .glass-panel {
       background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--glass-border);
       border-radius: 24px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
-    /* Sidebar */
     .sidebar {
-      width: 320px;
+      width: 340px;
       display: flex;
       flex-direction: column;
       padding: 24px 16px;
@@ -103,53 +96,64 @@
     .brand-header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 32px;
+      gap: 14px;
+      margin-bottom: 28px;
       padding: 0 8px;
     }
 
     .brand-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
       object-fit: cover;
-      border: 1px solid var(--glass-border);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(41, 98, 255, 0.4);
+      box-shadow: 0 0 15px rgba(41, 98, 255, 0.3);
     }
 
-    /* 3. Typography (Hybrid Editorial) */
     .brand-title {
       font-family: var(--font-serif);
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
-      background: linear-gradient(135deg, var(--copper-primary), var(--copper-secondary));
+      background: linear-gradient(135deg, #FFFFFF, var(--thorn-cyan));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
     }
 
     .section-title {
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
       color: var(--text-muted);
       margin-bottom: 16px;
       padding: 0 8px;
       font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-title::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--thorn-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--thorn-cyan);
     }
 
     .model-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
       overflow-y: auto;
       flex: 1;
       padding: 4px;
     }
 
-    /* Custom Scrollbar */
     ::-webkit-scrollbar {
-      width: 6px;
+      width: 5px;
     }
 
     ::-webkit-scrollbar-track {
@@ -157,39 +161,56 @@
     }
 
     ::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(41, 98, 255, 0.2);
       border-radius: 10px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(41, 98, 255, 0.4);
     }
 
-    /* Dynamic Model Cards */
+    .provider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .provider-header {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--thorn-cyan);
+      padding: 0 8px;
+      font-weight: 600;
+      opacity: 0.8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .model-card {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 14px;
+      padding: 12px 14px;
       border-radius: 16px;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.04);
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .model-card:hover {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: rgba(255, 255, 255, 0.15);
+      background: rgba(41, 98, 255, 0.05);
+      border-color: rgba(41, 98, 255, 0.25);
     }
 
-    /* 1. Electric Neon Aura (Active State) */
     .model-card.active {
-      background: rgba(0, 102, 255, 0.05);
-      border-color: rgba(0, 102, 255, 0.6);
+      background: rgba(41, 98, 255, 0.08);
+      border-color: var(--thorn-bright, #2962FF);
       box-shadow:
-        0 0 20px rgba(0, 102, 255, 0.2),
-        inset 0 0 10px rgba(0, 212, 255, 0.1);
+        0 0 20px rgba(41, 98, 255, 0.25),
+        inset 0 0 12px rgba(0, 229, 255, 0.1);
     }
 
     .model-icon-wrapper {
@@ -197,62 +218,71 @@
       width: 36px;
       height: 36px;
       border-radius: 10px;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(0, 0, 0, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      border: 1px solid var(--glass-border);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
     }
 
     .model-icon {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       object-fit: contain;
       border-radius: 4px;
     }
 
     .model-card.active .model-icon-wrapper {
-      box-shadow: 0 0 15px rgba(0, 102, 255, 0.5);
-      border-color: var(--neon-blue-secondary);
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+      border-color: var(--thorn-cyan);
     }
 
     .model-info {
       flex: 1;
+      min-width: 0;
     }
 
     .model-name {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       color: var(--text-primary);
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: space-between;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .badge {
-      font-size: 9px;
-      padding: 2px 6px;
+      font-size: 8px;
+      padding: 2px 5px;
       border-radius: 4px;
-      background: rgba(212, 122, 71, 0.15);
-      color: var(--copper-secondary);
-      border: 1px solid rgba(212, 122, 71, 0.3);
+      background: rgba(41, 98, 255, 0.15);
+      color: var(--thorn-cyan);
+      border: 1px solid rgba(41, 98, 255, 0.3);
       text-transform: uppercase;
+      flex-shrink: 0;
     }
 
     .model-card.active .badge {
-      background: rgba(0, 102, 255, 0.15);
-      color: var(--neon-blue-secondary);
-      border: 1px solid rgba(0, 102, 255, 0.4);
+      background: rgba(0, 229, 255, 0.15);
+      color: #FFFFFF;
+      border: 1px solid rgba(0, 229, 255, 0.5);
     }
 
-    .model-provider {
-      font-size: 12px;
+    .model-id-sub {
+      font-size: 11px;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* Workspace Main Area */
     .workspace {
       flex: 1;
       display: flex;
@@ -262,11 +292,12 @@
     }
 
     .workspace-header {
-      padding: 24px;
+      padding: 22px 24px;
       border-bottom: 1px solid var(--glass-border);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: rgba(3, 5, 8, 0.3);
     }
 
     .current-model-display {
@@ -276,24 +307,26 @@
     }
 
     .current-model-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(0, 0, 0, 0.5);
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid rgba(41, 98, 255, 0.3);
+      background: rgba(0, 0, 0, 0.6);
       padding: 6px;
       object-fit: contain;
+      box-shadow: 0 0 15px rgba(41, 98, 255, 0.2);
     }
 
     .current-model-text h2 {
       font-family: var(--font-serif);
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
+      letter-spacing: 0.5px;
     }
 
     .current-model-text p {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-muted);
     }
 
@@ -303,13 +336,12 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 20px;
     }
 
-    /* Chat Messages */
     .message {
       display: flex;
-      gap: 16px;
+      gap: 14px;
       max-width: 85%;
     }
 
@@ -341,7 +373,7 @@
     }
 
     .message-bubble {
-      padding: 16px 20px;
+      padding: 14px 18px;
       border-radius: 16px;
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--glass-border);
@@ -350,20 +382,20 @@
     }
 
     .message.user .message-bubble {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(41, 98, 255, 0.08);
+      border-color: rgba(41, 98, 255, 0.3);
       border-bottom-right-radius: 4px;
     }
 
     .message.ai .message-bubble {
-      background: rgba(0, 102, 255, 0.02);
-      border: 1px solid rgba(0, 102, 255, 0.15);
+      background: rgba(0, 34, 102, 0.15);
+      border: 1px solid rgba(0, 229, 255, 0.2);
       border-bottom-left-radius: 4px;
-      box-shadow: inset 0 0 20px rgba(0, 102, 255, 0.02);
+      box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.03);
     }
 
-    /* Input Area (Volumetric Refractive Border) */
     .input-region {
-      padding: 24px;
+      padding: 20px 24px 24px 24px;
       position: relative;
     }
 
@@ -371,20 +403,20 @@
       display: flex;
       align-items: flex-end;
       gap: 12px;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(5, 8, 15, 0.7);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(41, 98, 255, 0.2);
       border-radius: 20px;
       padding: 12px 16px;
       transition: all 0.3s ease;
     }
 
     .input-glass-container.focused {
-      border-color: rgba(0, 102, 255, 0.8);
+      border-color: var(--thorn-cyan);
       box-shadow:
-        0 0 25px rgba(0, 102, 255, 0.3),
-        inset 0 0 15px rgba(0, 212, 255, 0.15);
+        0 0 25px rgba(0, 229, 255, 0.25),
+        inset 0 0 15px rgba(41, 98, 255, 0.15);
     }
 
     .input-glass-container textarea {
@@ -393,12 +425,12 @@
       border: none;
       color: var(--text-primary);
       font-family: var(--font-sans);
-      font-size: 15px;
+      font-size: 14px;
       resize: none;
-      height: 44px;
+      height: 42px;
       max-height: 150px;
       line-height: 22px;
-      padding: 11px 0;
+      padding: 10px 0;
     }
 
     .input-glass-container textarea:focus {
@@ -406,33 +438,32 @@
     }
 
     .input-glass-container textarea::placeholder {
-      color: rgba(225, 225, 230, 0.3);
+      color: rgba(126, 141, 159, 0.5);
     }
 
-    /* Primary CTA - Copper to Bronze Gradient */
     .send-btn {
-      background: linear-gradient(135deg, var(--copper-primary), var(--copper-secondary));
-      color: #000;
+      background: linear-gradient(135deg, var(--thorn-blue-bright), var(--thorn-cyan));
+      color: #030508;
       border: none;
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
-      box-shadow: 0 4px 15px rgba(212, 122, 71, 0.3);
+      box-shadow: 0 4px 15px rgba(41, 98, 255, 0.4);
       transition: all 0.2s ease;
     }
 
     .send-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(212, 122, 71, 0.5);
+      box-shadow: 0 6px 20px rgba(0, 229, 255, 0.6);
     }
 
     .send-btn i {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: bold;
     }
   </style>
@@ -440,62 +471,47 @@
 
 <body>
 
-  <!-- Ambient Background Light -->
   <div class="ambient-mesh"></div>
 
   <div class="app-container">
 
-    <!-- Sidebar -->
     <aside class="glass-panel sidebar">
       <div class="brand-header">
-        <!-- Uses your web.png constraint -->
-        <img src="web.png" alt="Obsidian" class="brand-logo">
-        <div class="brand-title">Obsidian</div>
+        <img src="web.png" alt="Calyx" class="brand-logo">
+        <div class="brand-title">Calyx Studio</div>
       </div>
 
-      <h2 class="section-title">AI Workspace Engines</h2>
+      <h2 class="section-title">Thorn Matrix</h2>
 
-      <!-- Dynamically Populated by models.js -->
       <div id="model-list" class="model-list">
-        <!-- JS will inject models here -->
       </div>
     </aside>
 
-    <!-- Main Workspace -->
     <main class="glass-panel workspace">
-      <!-- Header dynamically updated -->
       <header class="workspace-header">
         <div class="current-model-display" id="current-model-header">
-          <!-- JS will inject current model info here -->
         </div>
 
-        <!-- Extra top-right controls -->
         <div style="display: flex; gap: 12px;">
-          <div class="avatar"><i class="ph ph-gear text-muted"></i></div>
+          <div class="avatar"><i class="ph ph-sliders text-muted"></i></div>
         </div>
       </header>
 
-      <!-- Chat / Code Interface -->
       <div class="chat-area" id="chat-area">
-
-        <!-- Initial Mock AI Message -->
         <div class="message ai">
           <div class="avatar" id="chat-ai-avatar">
-            <i class="ph ph-sparkle" style="color: var(--neon-blue-secondary)"></i>
+            <i class="ph ph-flower-lotus" style="color: var(--thorn-cyan)"></i>
           </div>
           <div class="message-bubble">
-            System initialized. Select an AI model from the sidebar to begin building.
-            I am ready for high-performance reasoning and code generation.
+            Calyx network active. Select a model variant from the thorn matrix to deploy intelligence parameters.
           </div>
         </div>
-
       </div>
 
-      <!-- Input Area -->
       <div class="input-region">
         <div class="input-glass-container" id="input-wrapper">
-          <i class="ph ph-magic-wand" style="color: rgba(255,255,255,0.3); font-size: 20px; padding-bottom: 12px;"></i>
-          <textarea id="prompt-input" placeholder="Initiate sequence or paste code..."></textarea>
+          <i class="ph ph-plant" style="color: rgba(41, 98, 255, 0.5); font-size: 20px; padding-bottom: 10px;"></i>
+          <textarea id="prompt-input" placeholder="Inject instructions or execute query..."></textarea>
           <button class="send-btn">
                         <i class="ph ph-arrow-up"></i>
                     </button>
@@ -504,66 +520,82 @@
     </main>
   </div>
 
-  <!-- Dynamic JS Connection -->
   <script type="module">
-    // IMPORTANT: Directly connects to models.js.
-        // Any models added to models.js will instantly render here without HTML edits.
-        import { models } from './models.js';
+    import { models } from './models.js';
 
-        // State
+        // Safe unique fallback identification using index and id
         let currentModel = models[0];
 
-        // DOM Elements
         const modelListEl = document.getElementById('model-list');
         const headerEl = document.getElementById('current-model-header');
         const aiAvatarEl = document.getElementById('chat-ai-avatar');
-        
-        // Render Sidebar Models
+
         function renderModels() {
             modelListEl.innerHTML = '';
             
-            models.forEach(model => {
-                const card = document.createElement('div');
-                card.className = `model-card ${model.id === currentModel.id ? 'active' : ''}`;
-                
-                card.innerHTML = `
-                    <div class="model-icon-wrapper">
-                        <img src="${model.logoUrl}" class="model-icon" alt="${model.provider}">
-                    </div>
-                    <div class="model-info">
-                        <div class="model-name">
-                            ${model.name}
-                            <span class="badge">${model.badge}</span>
+            // Group models dynamically by provider to handle multiple models from the same company seamlessly
+            const groupedModels = {};
+            models.forEach((model, index) => {
+                const providerKey = model.provider || "General";
+                if (!groupedModels[providerKey]) {
+                    groupedModels[providerKey] = [];
+                }
+                // Attach unique reference index to safeguard against identical IDs/keys
+                groupedModels[providerKey].push({ ...model, _globalIndex: index });
+            });
+
+            Object.keys(groupedModels).forEach(provider => {
+                const groupContainer = document.createElement('div');
+                groupContainer.className = 'provider-group';
+
+                const groupHeader = document.createElement('div');
+                groupHeader.className = 'provider-header';
+                groupHeader.innerHTML = `<i class="ph ph-git-commit" style="font-size: 10px;"></i> ${provider}`;
+                groupContainer.appendChild(groupHeader);
+
+                groupedModels[provider].forEach(model => {
+                    const isSelected = currentModel._globalIndex === model._globalIndex;
+                    const card = document.createElement('div');
+                    card.className = `model-card ${isSelected ? 'active' : ''}`;
+                    
+                    card.innerHTML = `
+                        <div class="model-icon-wrapper">
+                            <img src="${model.logoUrl}" class="model-icon" alt="${model.provider}">
                         </div>
-                        <div class="model-provider">${model.provider}</div>
-                    </div>
-                `;
-                
-                card.addEventListener('click', () => {
-                    currentModel = model;
-                    renderModels(); // Refresh active states
-                    updateWorkspace(); // Update header
+                        <div class="model-info">
+                            <div class="model-name">
+                                <span>${model.name}</span>
+                                <span class="badge">${model.badge || 'Ready'}</span>
+                            </div>
+                            <div class="model-id-sub">${model.id}</div>
+                        </div>
+                    `;
+                    
+                    card.addEventListener('click', () => {
+                        currentModel = model;
+                        renderModels();
+                        updateWorkspace();
+                    });
+                    
+                    groupContainer.appendChild(card);
                 });
-                
-                modelListEl.appendChild(card);
+
+                modelListEl.appendChild(groupContainer);
             });
         }
 
-        // Update Workspace Header based on selection
         function updateWorkspace() {
             headerEl.innerHTML = `
                 <img src="${currentModel.logoUrl}" class="current-model-icon" alt="${currentModel.name}">
                 <div class="current-model-text">
                     <h2>${currentModel.name}</h2>
-                    <p>${currentModel.description}</p>
+                    <p>${currentModel.description || currentModel.id}</p>
                 </div>
             `;
             
-            // Update AI avatar in chat mockup
             aiAvatarEl.innerHTML = `<img src="${currentModel.logoUrl}" alt="${currentModel.name}">`;
         }
 
-        // Handle Volumetric Refractive Input Border (Luminescent Obsidian style)
         const textarea = document.getElementById('prompt-input');
         const inputWrapper = document.getElementById('input-wrapper');
 
@@ -575,8 +607,9 @@
             inputWrapper.classList.remove('focused');
         });
 
-        // Initialize UI
         if(models && models.length > 0) {
+            // Assign default tracking index to initial model
+            currentModel = { ...models[0], _globalIndex: 0 };
             renderModels();
             updateWorkspace();
         }
