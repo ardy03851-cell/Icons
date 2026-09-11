@@ -1,100 +1,726 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Morning Focus</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#050507">
+    
+    <!-- Tab and App Icon -->
+    <link rel="icon" type="image/png" href="web.png">
+    <link rel="apple-touch-icon" href="web.png">
+    
+    <title>Calyx</title>
+    
+    <!-- Hybrid Editorial Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
-  <!-- Script to dynamically find and apply any available icon format -->
-  <script>
-    (function autoDetectFavicon() {
-      // List of candidate filenames and formats to check for
-      const candidateIcons = [
-        'icon.png',
-        'favicon.ico',
-        'icon.svg',
-        'icon.webp',
-        'icon.jpg',
-        'icon.jpeg',
-        'favicon.png'
-      ];
-
-      // Helper function to test if an icon file exists and loads successfully
-      function checkIconExists(url) {
-        return new Promise((resolve) => {
-          const img = new Image();
-          img.onload = () => resolve(true);
-          img.onerror = () => resolve(false);
-          img.src = url;
-        });
-      }
-
-      // Search through candidates and set the favicon link element
-      async function applyFirstFoundIcon() {
-        for (const iconPath of candidateIcons) {
-          const exists = await checkIconExists(iconPath);
-          if (exists) {
-            let link = document.querySelector("link[rel*='icon']");
-            if (!link) {
-              link = document.createElement('link');
-              link.rel = 'icon';
-              document.head.appendChild(link);
-            }
-            link.href = iconPath;
-            console.log('Favicon loaded successfully from:', iconPath);
-            break; // Stop at the first valid icon found
-          }
+    <style>
+        :root {
+            /* Luminescent Obsidian Palette */
+            --bg-base: #050507;
+            --bg-slate: #0f1115;
+            --warm-copper: #D47A47;
+            --warm-amber: #E89A5D;
+            --neon-blue: #00D2FF;
+            --neon-blue-deep: #0066FF;
+            --text-primary: #E1E1E6;
+            --text-secondary: #8B8B93;
+            
+            /* Glass Optics */
+            --glass-bg: rgba(15, 17, 21, 0.65);
+            --glass-bg-hover: rgba(25, 28, 35, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-border-active: rgba(0, 210, 255, 0.4);
+            --glass-blur: blur(24px);
+            
+            /* Spacing & Safe Areas (iPad Optimized) */
+            --safe-top: env(safe-area-inset-top, 20px);
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
+            --safe-left: env(safe-area-inset-left, 20px);
+            --safe-right: env(safe-area-inset-right, 20px);
         }
-      }
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', applyFirstFoundIcon);
-      } else {
-        applyFirstFoundIcon();
-      }
-    })();
-  </script>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
 
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #f4f6f8;
-      color: #1a1a1a;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-    }
-    .card {
-      background: #ffffff;
-      padding: 32px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      max-width: 480px;
-      line-height: 1.6;
-    }
-    h1 {
-      margin-top: 0;
-      font-size: 1.5rem;
-      color: #111827;
-    }
-    p {
-      color: #4b5563;
-      font-size: 0.95rem;
-      margin-bottom: 0;
-    }
-  </style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            height: 100dvh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            /* Warm Ambient Lighting Mesh */
+            background-image: 
+                radial-gradient(circle at 15% 30%, rgba(212, 122, 71, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 85% 70%, rgba(232, 154, 93, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(5, 5, 7, 1) 0%, rgba(5, 5, 7, 0.95) 100%);
+            background-attachment: fixed;
+        }
+
+        /* Typography Hierarchy */
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        /* Layout Structure */
+        .app-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
+            gap: 16px;
+        }
+
+        /* Glass Panel Base */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Sidebar (Model Selector) */
+        .sidebar {
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            flex-shrink: 0;
+        }
+
+        .brand-header {
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .brand-header h1 {
+            font-size: 24px;
+            background: linear-gradient(135deg, var(--warm-copper), var(--warm-amber));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+
+        .brand-header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .models-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-right: 8px;
+        }
+
+        /* Custom Scrollbar for iPad */
+        .models-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .models-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .models-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        /* Model Card */
+        .model-card {
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .model-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .model-card:hover {
+            background: var(--glass-bg-hover);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .model-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Active State: Electric Neon Aura */
+        .model-card.active {
+            background: rgba(0, 102, 255, 0.08);
+            border-color: var(--glass-border-active);
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.15), inset 0 0 0 1px rgba(0, 210, 255, 0.3);
+        }
+
+        .model-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        /* Refractive 3D Glass Iconography styling for SVGs */
+        .model-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 8px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+        }
+
+        .model-logo svg {
+            width: 20px;
+            height: 20px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+
+        .model-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .model-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .model-provider {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .model-badge {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 4px 8px;
+            border-radius: 20px;
+            background: rgba(212, 122, 71, 0.15);
+            color: var(--warm-amber);
+            border: 1px solid rgba(212, 122, 71, 0.3);
+        }
+
+        .model-card.active .model-badge {
+            background: rgba(0, 210, 255, 0.15);
+            color: var(--neon-blue);
+            border-color: rgba(0, 210, 255, 0.4);
+        }
+
+        .model-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            margin-top: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Main Chat Area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h2 {
+            font-size: 20px;
+            color: var(--text-primary);
+        }
+
+        .chat-header-status {
+            font-size: 12px;
+            color: var(--neon-blue);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--neon-blue);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 16px 20px;
+            border-radius: 20px;
+            font-size: 15px;
+            line-height: 1.6;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, rgba(212, 122, 71, 0.2), rgba(232, 154, 93, 0.15));
+            border: 1px solid rgba(212, 122, 71, 0.3);
+            color: var(--text-primary);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.ai {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.ai strong {
+            color: var(--neon-blue);
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 20px 24px;
+            border-top: 1px solid var(--glass-border);
+            background: rgba(5, 5, 7, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+        }
+
+        .prompt-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 16px 20px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px; /* Prevents iOS zoom */
+            resize: none;
+            outline: none;
+            transition: all 0.3s ease;
+            min-height: 56px;
+            max-height: 120px;
+        }
+
+        .prompt-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Active Input: Electric Neon Aura */
+        .prompt-input:focus {
+            border-color: var(--glass-border-active);
+            box-shadow: 0 0 24px rgba(0, 102, 255, 0.25), inset 0 0 12px rgba(0, 210, 255, 0.05);
+            background: rgba(0, 102, 255, 0.03);
+        }
+
+        /* Primary CTA: Metallic Copper-to-Bronze */
+        .send-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--warm-copper), var(--warm-amber));
+            color: #050507;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 122, 71, 0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 122, 71, 0.5), inset 0 1px 0 rgba(255,255,255,0.4);
+        }
+
+        .send-btn:active {
+            transform: translateY(0);
+        }
+
+        .send-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            border-bottom-left-radius: 4px;
+            gap: 6px;
+        }
+
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typingBounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; box-shadow: 0 0 8px var(--neon-blue); }
+        }
+
+        /* iPad Responsive Adjustments */
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: 200px;
+                flex-shrink: 0;
+            }
+            .models-list {
+                flex-direction: row;
+                overflow-x: auto;
+                overflow-y: hidden;
+                padding-right: 0;
+                padding-bottom: 8px;
+            }
+            .model-card {
+                min-width: 260px;
+                flex-shrink: 0;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <div class="card">
-    <h1>Morning Focus Routine</h1>
-    <p>
-      Starting the day with clear priorities sets the tone for meaningful work. Spending the first twenty minutes reviewing key objectives and tackling high-impact tasks creates momentum before stepping into daily meetings and incoming messages.
-    </p>
-  </div>
+    <div class="app-container">
+        <!-- Sidebar: AI Model Selector -->
+        <aside class="sidebar glass-panel">
+            <div class="brand-header">
+                <h1>Nexus AI</h1>
+                <p>Select an intelligence engine</p>
+            </div>
+            <div class="models-list" id="modelsList">
+                <!-- Models injected automatically from models.js -->
+            </div>
+        </aside>
 
+        <!-- Main Content: Chat Interface -->
+        <main class="main-content glass-panel">
+            <div class="chat-header">
+                <div>
+                    <h2 id="currentModelName">Select a Model</h2>
+                    <div class="chat-header-status" id="modelStatus" style="opacity: 0;">
+                        <span class="status-dot"></span>
+                        <span>Ready</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="messages-container" id="messagesContainer">
+                <div class="message ai">
+                    Welcome to the Luminescent Obsidian workspace. Select an AI model from the sidebar to begin coding, reasoning, or creating.
+                </div>
+                
+                <div class="typing-indicator" id="typingIndicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-wrapper">
+                    <textarea 
+                        class="prompt-input" 
+                        id="promptInput" 
+                        placeholder="Ask anything, or paste code to analyze..." 
+                        rows="1"
+                    ></textarea>
+                    <button class="send-btn" id="sendBtn" disabled>
+                        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Module Script to connect to models.js -->
+    <script type="module">
+        import { models } from './models.js';
+
+        // State
+        let currentModel = null;
+        let messages = [];
+        let isGenerating = false;
+
+        // DOM Elements
+        const modelsList = document.getElementById('modelsList');
+        const currentModelName = document.getElementById('currentModelName');
+        const modelStatus = document.getElementById('modelStatus');
+        const messagesContainer = document.getElementById('messagesContainer');
+        const promptInput = document.getElementById('promptInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        // Initialize
+        function init() {
+            renderModels();
+            if (models.length > 0) {
+                selectModel(models[0].id);
+            }
+            
+            // Auto-resize textarea
+            promptInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+                sendBtn.disabled = this.value.trim() === '' || isGenerating;
+            });
+
+            // Send on Enter (Shift+Enter for new line)
+            promptInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (!sendBtn.disabled) sendMessage();
+                }
+            });
+
+            sendBtn.addEventListener('click', sendMessage);
+        }
+
+        // Render Models Automatically
+        function renderModels() {
+            modelsList.innerHTML = '';
+            models.forEach(model => {
+                const card = document.createElement('div');
+                card.className = 'model-card';
+                card.dataset.id = model.id;
+                card.innerHTML = `
+                    <div class="model-header">
+                        <div class="model-logo">${model.logoSvg}</div>
+                        <div class="model-info">
+                            <div class="model-name">
+                                ${model.name}
+                                <span class="model-badge">${model.badge}</span>
+                            </div>
+                            <div class="model-provider">${model.provider}</div>
+                        </div>
+                    </div>
+                    <div class="model-desc">${model.description}</div>
+                `;
+                card.addEventListener('click', () => selectModel(model.id));
+                modelsList.appendChild(card);
+            });
+        }
+
+        // Select Model
+        function selectModel(modelId) {
+            currentModel = models.find(m => m.id === modelId);
+            if (!currentModel) return;
+
+            // Update UI
+            document.querySelectorAll('.model-card').forEach(card => {
+                card.classList.toggle('active', card.dataset.id === modelId);
+            });
+
+            currentModelName.textContent = currentModel.name;
+            modelStatus.style.opacity = '1';
+            
+            // Add system message context
+            addMessage('ai', `Switched to **${currentModel.name}** by ${currentModel.provider}. ${currentModel.description}`);
+        }
+
+        // Add Message to UI
+        function addMessage(role, content) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${role}`;
+            msgDiv.innerHTML = content.replace(/\n/g, '<br>');
+            
+            // Insert before typing indicator
+            messagesContainer.insertBefore(msgDiv, typingIndicator);
+            scrollToBottom();
+            
+            messages.push({ role, content });
+        }
+
+        // Scroll to bottom
+        function scrollToBottom() {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Send Message Logic
+        async function sendMessage() {
+            const text = promptInput.value.trim();
+            if (!text || !currentModel || isGenerating) return;
+
+            isGenerating = true;
+            sendBtn.disabled = true;
+            promptInput.value = '';
+            promptInput.style.height = 'auto';
+            
+            addMessage('user', text);
+            typingIndicator.classList.add('active');
+            scrollToBottom();
+
+            try {
+                const response = await fetchAIResponse(text);
+                typingIndicator.classList.remove('active');
+                addMessage('ai', response);
+            } catch (error) {
+                typingIndicator.classList.remove('active');
+                addMessage('ai', `<span style="color: #ff6b6b;">Error:</span> ${error.message}. Check console for details.`);
+            } finally {
+                isGenerating = false;
+                sendBtn.disabled = promptInput.value.trim() === '';
+            }
+        }
+
+        // API Router (Handles both OpenAI-compatible and Anthropic)
+        async function fetchAIResponse(userMessage) {
+            const { endpoint, apiKey, id } = currentModel;
+            
+            // Format messages for API
+            const apiMessages = messages.filter(m => m.role !== 'ai' || m.content.includes('Switched to')).map(m => ({
+                role: m.role === 'user' ? 'user' : 'assistant',
+                content: m.content
+            }));
+            apiMessages.push({ role: 'user', content: userMessage });
+
+            if (endpoint.includes('anthropic')) {
+                // Anthropic Format
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'x-api-key': apiKey,
+                        'anthropic-version': '2023-06-01',
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: id.split('/')[1],
+                        messages: apiMessages,
+                        max_tokens: 2000
+                    })
+                });
+                
+                if (!response.ok) throw new Error(`Anthropic API Error: ${response.statusText}`);
+                const data = await response.json();
+                return data.content[0].text;
+            } else {
+                // OpenAI-Compatible Format (AnyAPI, Moonshot, DeepSeek, etc.)
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: id,
+                        messages: apiMessages,
+                        temperature: 0.7
+                    })
+                });
+                
+                if (!response.ok) {
+                    const err = await response.json().catch(() => ({}));
+                    throw new Error(err.error?.message || `API Error: ${response.statusText}`);
+                }
+                const data = await response.json();
+                return data.choices[0].message.content;
+            }
+        }
+
+        // Start
+        init();
+    </script>
 </body>
 </html>
