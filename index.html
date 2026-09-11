@@ -3,1036 +3,583 @@
 
 <head>
   <meta charset="UTF-8">
+  <!-- iPad Optimization: Prevents zooming and locks scale -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NEXUS - AI Code Engine</title>
+  <title>Calyx Studio</title>
+
+  <!-- Tab Icon -->
+  <link rel="icon" href="web.png">
+
+  <!-- Hybrid Editorial Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap"
     rel="stylesheet">
+
+  <!-- Phosphor Icons (Refractive 3D Glass Iconography Support) -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
   <style>
+    /* Base Variables - Luminescent Obsidian */
+    :root {
+      --bg-canvas: #050507;
+      --text-primary: #E1E1E6;
+      --text-muted: #8A8A93;
+
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+
+      --copper-primary: #D47A47;
+      --copper-secondary: #E89A5D;
+
+      --neon-blue-primary: #0066FF;
+      --neon-blue-secondary: #00D2FF;
+
+      --font-serif: 'Playfair Display', serif;
+      --font-sans: 'Inter', sans-serif;
+    }
+
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
     }
 
-    :root {
-      --obsidian-dark: #050507;
-      --slate-charcoal: #0a0a0f;
-      --glass-bg: rgba(10, 10, 15, 0.85);
-      --glass-border: rgba(255, 255, 255, 0.08);
-      --copper-warm: #D47A47;
-      --amber-glow: #E89A5D;
-      --champagne-gold: #F5D5A0;
-      --electric-blue: #0066FF;
-      --neon-cyan: #00D2FF;
-      --text-primary: #E1E1E6;
-      --text-secondary: #9A9AA8;
-      --text-muted: #6A6A7A;
-    }
-
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--obsidian-dark);
+      background-color: var(--bg-canvas);
       color: var(--text-primary);
+      font-family: var(--font-sans);
+      height: 100vh;
+      width: 100vw;
       overflow: hidden;
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      -webkit-font-smoothing: antialiased;
+      display: flex;
     }
 
-    .ambient-bg {
-      position: fixed;
+    /* 1. Canvas & Dual-Tone Atmosphere (Passive Warmth) */
+    .ambient-mesh {
+      position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       z-index: -1;
       background:
-        radial-gradient(ellipse at 20% 50%, rgba(212, 122, 71, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(232, 154, 93, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 20%, rgba(0, 102, 255, 0.04) 0%, transparent 50%),
-        linear-gradient(180deg, var(--obsidian-dark) 0%, var(--slate-charcoal) 100%);
+        radial-gradient(circle at 15% 30%, rgba(212, 122, 71, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(232, 154, 93, 0.08) 0%, transparent 40%);
+      filter: blur(60px);
+      pointer-events: none;
     }
 
+    /* Layout */
     .app-container {
       display: flex;
-      height: 100vh;
-      height: 100dvh;
-      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      width: 100%;
+      height: 100%;
+      padding: 16px;
+      gap: 16px;
+    }
+
+    /* 2. Materiality & Glass Optics (Dark Frosted Glass) */
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     }
 
     /* Sidebar */
     .sidebar {
       width: 320px;
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      border-right: 1px solid var(--glass-border);
       display: flex;
       flex-direction: column;
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 10;
+      padding: 24px 16px;
+      flex-shrink: 0;
     }
 
-    .sidebar-header {
-      padding: 24px;
-      border-bottom: 1px solid var(--glass-border);
-      background: linear-gradient(180deg, rgba(212, 122, 71, 0.05) 0%, transparent 100%);
-    }
-
-    .brand-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 28px;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--champagne-gold) 0%, var(--copper-warm) 50%, var(--amber-glow) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -0.5px;
-      margin-bottom: 4px;
-    }
-
-    .brand-subtitle {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      font-weight: 500;
-    }
-
-    .model-selector {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-    }
-
-    .model-selector::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .model-selector::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .model-selector::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-    }
-
-    .section-label {
-      font-size: 10px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      padding-left: 4px;
-    }
-
-    .model-card {
-      background: rgba(20, 20, 30, 0.6);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .model-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(0, 102, 255, 0.15) 0%, transparent 50%);
-      opacity: 0;
-      transition: opacity 0.3s;
-      pointer-events: none;
-    }
-
-    .model-card:hover::before {
-      opacity: 1;
-    }
-
-    .model-card.active {
-      background: rgba(0, 102, 255, 0.08);
-      border-color: rgba(0, 210, 255, 0.3);
-      box-shadow:
-        0 0 20px rgba(0, 102, 255, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    }
-
-    .model-card-header {
+    .brand-header {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 8px;
+      margin-bottom: 32px;
+      padding: 0 8px;
     }
 
-    .model-logo {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    /* 3. Typography (Hybrid Editorial) */
+    .brand-title {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--copper-primary), var(--copper-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      padding: 0 8px;
+      font-weight: 600;
+    }
+
+    .model-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      flex: 1;
+      padding: 4px;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Dynamic Model Cards */
+    .model-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .model-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* 1. Electric Neon Aura (Active State) */
+    .model-card.active {
+      background: rgba(0, 102, 255, 0.05);
+      border-color: rgba(0, 102, 255, 0.6);
+      box-shadow:
+        0 0 20px rgba(0, 102, 255, 0.2),
+        inset 0 0 10px rgba(0, 212, 255, 0.1);
+    }
+
+    .model-icon-wrapper {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
       background: rgba(255, 255, 255, 0.05);
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      flex-shrink: 0;
+      border: 1px solid var(--glass-border);
     }
 
-    .model-logo img {
+    .model-icon {
       width: 24px;
       height: 24px;
       object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .model-card.active .model-icon-wrapper {
+      box-shadow: 0 0 15px rgba(0, 102, 255, 0.5);
+      border-color: var(--neon-blue-secondary);
     }
 
     .model-info {
       flex: 1;
-      min-width: 0;
     }
 
     .model-name {
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 500;
       color: var(--text-primary);
-      margin-bottom: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(212, 122, 71, 0.15);
+      color: var(--copper-secondary);
+      border: 1px solid rgba(212, 122, 71, 0.3);
+      text-transform: uppercase;
+    }
+
+    .model-card.active .badge {
+      background: rgba(0, 102, 255, 0.15);
+      color: var(--neon-blue-secondary);
+      border: 1px solid rgba(0, 102, 255, 0.4);
     }
 
     .model-provider {
-      font-size: 11px;
-      color: var(--text-secondary);
-    }
-
-    .model-description {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--text-muted);
-      line-height: 1.5;
-      margin-top: 8px;
+      margin-top: 4px;
     }
 
-    .model-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 8px;
-      background: rgba(0, 210, 255, 0.1);
-      border: 1px solid rgba(0, 210, 255, 0.2);
-      border-radius: 4px;
-      font-size: 9px;
-      color: var(--neon-cyan);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 8px;
-    }
-
-    .badge-dot {
-      width: 5px;
-      height: 5px;
-      background: var(--neon-cyan);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--neon-cyan);
-    }
-
-    /* Main Content */
-    .main-content {
+    /* Workspace Main Area */
+    .workspace {
       flex: 1;
       display: flex;
       flex-direction: column;
-      background: rgba(5, 5, 7, 0.5);
+      position: relative;
+      overflow: hidden;
     }
 
-    .header {
-      padding: 16px 24px;
+    .workspace-header {
+      padding: 24px;
       border-bottom: 1px solid var(--glass-border);
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
+      align-items: center;
     }
 
-    .header-left {
+    .current-model-display {
       display: flex;
       align-items: center;
       gap: 16px;
     }
 
-    .menu-button {
-      display: none;
-      width: 40px;
-      height: 40px;
-      background: rgba(20, 20, 30, 0.6);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .menu-button svg {
-      width: 20px;
-      height: 20px;
-      stroke: var(--text-primary);
-    }
-
-    .active-model-display {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .active-model-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: rgba(0, 102, 255, 0.1);
-      border: 1px solid rgba(0, 210, 255, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      box-shadow: 0 0 20px rgba(0, 102, 255, 0.3);
-    }
-
-    .active-model-logo img {
-      width: 30px;
-      height: 30px;
+    .current-model-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.5);
+      padding: 6px;
       object-fit: contain;
     }
 
-    .active-model-name {
-      font-family: 'Playfair Display', serif;
+    .current-model-text h2 {
+      font-family: var(--font-serif);
       font-size: 20px;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .active-model-status {
-      font-size: 11px;
-      color: var(--neon-cyan);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      background: var(--neon-cyan);
-      border-radius: 50%;
-      box-shadow: 0 0 10px var(--neon-cyan);
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-
-      0%,
-      100% {
-        opacity: 1;
-      }
-
-      50% {
-        opacity: 0.5;
-      }
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .icon-button {
-      width: 40px;
-      height: 40px;
-      background: rgba(20, 20, 30, 0.6);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .icon-button:hover {
-      background: rgba(0, 102, 255, 0.1);
-      border-color: rgba(0, 210, 255, 0.3);
-    }
-
-    .icon-button svg {
-      width: 20px;
-      height: 20px;
-      stroke: var(--text-primary);
-    }
-
-    /* Chat Area */
-    .chat-container {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px;
-      scroll-behavior: smooth;
-    }
-
-    .chat-container::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .chat-container::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .chat-container::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
-    }
-
-    .message {
-      margin-bottom: 24px;
-      animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .message-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-
-    .message-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: rgba(20, 20, 30, 0.8);
-      border: 1px solid var(--glass-border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .message-avatar.ai {
-      background: rgba(0, 102, 255, 0.1);
-      border-color: rgba(0, 210, 255, 0.3);
-    }
-
-    .message-avatar img {
-      width: 24px;
-      height: 24px;
-      object-fit: contain;
-    }
-
-    .message-avatar.user svg {
-      width: 20px;
-      height: 20px;
-      stroke: var(--text-primary);
-    }
-
-    .message-sender {
-      font-size: 13px;
       font-weight: 600;
-      color: var(--text-primary);
+      margin-bottom: 4px;
     }
 
-    .message-time {
-      font-size: 11px;
+    .current-model-text p {
+      font-size: 13px;
       color: var(--text-muted);
     }
 
-    .message-content {
-      background: rgba(20, 20, 30, 0.6);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 16px;
-      font-size: 14px;
-      line-height: 1.6;
-      color: var(--text-primary);
-      margin-left: 44px;
-    }
-
-    .message.ai .message-content {
-      background: rgba(0, 102, 255, 0.05);
-      border-color: rgba(0, 210, 255, 0.15);
-    }
-
-    .message-content pre {
-      background: rgba(5, 5, 7, 0.8);
-      border: 1px solid var(--glass-border);
-      border-radius: 8px;
-      padding: 12px;
-      margin: 12px 0;
-      overflow-x: auto;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .message-content code {
-      font-family: 'Courier New', monospace;
-      background: rgba(0, 102, 255, 0.1);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 13px;
-    }
-
-    .typing-indicator {
+    .chat-area {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
       display: flex;
-      gap: 4px;
-      padding: 16px;
-      background: rgba(0, 102, 255, 0.05);
-      border: 1px solid rgba(0, 210, 255, 0.15);
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Chat Messages */
+    .message {
+      display: flex;
+      gap: 16px;
+      max-width: 85%;
+    }
+
+    .message.ai {
+      align-self: flex-start;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
       border-radius: 12px;
-      margin-left: 44px;
-      width: fit-content;
-    }
-
-    .typing-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--neon-cyan);
-      border-radius: 50%;
-      animation: typing 1.4s ease-in-out infinite;
-    }
-
-    .typing-dot:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .typing-dot:nth-child(3) {
-      animation-delay: 0.4s;
-    }
-
-    @keyframes typing {
-
-      0%,
-      60%,
-      100% {
-        transform: translateY(0);
-        opacity: 0.3;
-      }
-
-      30% {
-        transform: translateY(-10px);
-        opacity: 1;
-      }
-    }
-
-    /* Input Area */
-    .input-container {
-      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--glass-border);
       background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      border-top: 1px solid var(--glass-border);
+      flex-shrink: 0;
     }
 
-    .input-wrapper {
-      background: rgba(10, 10, 15, 0.9);
-      border: 2px solid transparent;
+    .avatar img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+
+    .message-bubble {
+      padding: 16px 20px;
       border-radius: 16px;
-      padding: 4px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .message.user .message-bubble {
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.ai .message-bubble {
+      background: rgba(0, 102, 255, 0.02);
+      border: 1px solid rgba(0, 102, 255, 0.15);
+      border-bottom-left-radius: 4px;
+      box-shadow: inset 0 0 20px rgba(0, 102, 255, 0.02);
+    }
+
+    /* Input Area (Volumetric Refractive Border) */
+    .input-region {
+      padding: 24px;
       position: relative;
-      background-image:
-        linear-gradient(rgba(10, 10, 15, 0.9), rgba(10, 10, 15, 0.9)),
-        linear-gradient(135deg, rgba(0, 102, 255, 0.5), rgba(0, 210, 255, 0.5));
-      background-origin: border-box;
-      background-clip: padding-box, border-box;
-      box-shadow:
-        0 0 30px rgba(0, 102, 255, 0.2),
-        0 4px 20px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s;
     }
 
-    .input-wrapper:focus-within {
-      box-shadow:
-        0 0 40px rgba(0, 102, 255, 0.4),
-        0 4px 30px rgba(0, 0, 0, 0.4);
-    }
-
-    .input-inner {
+    .input-glass-container {
       display: flex;
       align-items: flex-end;
       gap: 12px;
-      background: rgba(10, 10, 15, 0.95);
-      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
       padding: 12px 16px;
+      transition: all 0.3s ease;
     }
 
-    .input-field {
+    .input-glass-container.focused {
+      border-color: rgba(0, 102, 255, 0.8);
+      box-shadow:
+        0 0 25px rgba(0, 102, 255, 0.3),
+        inset 0 0 15px rgba(0, 212, 255, 0.15);
+    }
+
+    .input-glass-container textarea {
       flex: 1;
       background: transparent;
       border: none;
-      outline: none;
       color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
+      font-family: var(--font-sans);
+      font-size: 15px;
       resize: none;
-      min-height: 24px;
-      max-height: 120px;
-      line-height: 1.5;
+      height: 44px;
+      max-height: 150px;
+      line-height: 22px;
+      padding: 11px 0;
     }
 
-    .input-field::placeholder {
-      color: var(--text-muted);
+    .input-glass-container textarea:focus {
+      outline: none;
     }
 
-    .send-button {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--copper-warm) 0%, var(--amber-glow) 100%);
+    .input-glass-container textarea::placeholder {
+      color: rgba(225, 225, 230, 0.3);
+    }
+
+    /* Primary CTA - Copper to Bronze Gradient */
+    .send-btn {
+      background: linear-gradient(135deg, var(--copper-primary), var(--copper-secondary));
+      color: #000;
       border: none;
-      border-radius: 10px;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.2s;
       flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(212, 122, 71, 0.3);
+      box-shadow: 0 4px 15px rgba(212, 122, 71, 0.3);
+      transition: all 0.2s ease;
     }
 
-    .send-button:hover {
+    .send-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(212, 122, 71, 0.4);
+      box-shadow: 0 6px 20px rgba(212, 122, 71, 0.5);
     }
 
-    .send-button:active {
-      transform: translateY(0);
-    }
-
-    .send-button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .send-button svg {
-      width: 20px;
-      height: 20px;
-      stroke: white;
-    }
-
-    /* Mobile Responsive */
-    @media (max-width: 768px) {
-      .sidebar {
-        position: fixed;
-        left: 0;
-        top: 0;
-        height: 100%;
-        transform: translateX(-100%);
-      }
-
-      .sidebar.active {
-        transform: translateX(0);
-      }
-
-      .menu-button {
-        display: flex;
-      }
-
-      .sidebar-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(4px);
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s;
-        z-index: 9;
-      }
-
-      .sidebar-overlay.active {
-        opacity: 1;
-        pointer-events: all;
-      }
+    .send-btn i {
+      font-size: 20px;
+      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
-  <div class="ambient-bg"></div>
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Ambient Background Light -->
+  <div class="ambient-mesh"></div>
 
   <div class="app-container">
+
     <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <h1 class="brand-title">NEXUS</h1>
-        <p class="brand-subtitle">AI Code Engine</p>
+    <aside class="glass-panel sidebar">
+      <div class="brand-header">
+        <!-- Uses your web.png constraint -->
+        <img src="web.png" alt="Obsidian" class="brand-logo">
+        <div class="brand-title">Obsidian</div>
       </div>
 
-      <div class="model-selector" id="modelSelector">
-        <div class="section-label">AI Models</div>
-        <!-- Models will be dynamically inserted here -->
+      <h2 class="section-title">AI Workspace Engines</h2>
+
+      <!-- Dynamically Populated by models.js -->
+      <div id="model-list" class="model-list">
+        <!-- JS will inject models here -->
       </div>
     </aside>
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <header class="header">
-        <div class="header-left">
-          <button class="menu-button" id="menuButton">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-                            <line x1="3" y1="6" x2="21" y2="6"></line>
-                            <line x1="3" y1="12" x2="21" y2="12"></line>
-                            <line x1="3" y1="18" x2="21" y2="18"></line>
-                        </svg>
-                    </button>
-          <div class="active-model-display">
-            <div class="active-model-logo" id="activeModelLogo">
-              <!-- Logo will be inserted here -->
-            </div>
-            <div>
-              <div class="active-model-name" id="activeModelName">Select a Model</div>
-              <div class="active-model-status">
-                <span class="status-dot"></span>
-                <span>Ready</span>
-              </div>
-            </div>
-          </div>
+    <!-- Main Workspace -->
+    <main class="glass-panel workspace">
+      <!-- Header dynamically updated -->
+      <header class="workspace-header">
+        <div class="current-model-display" id="current-model-header">
+          <!-- JS will inject current model info here -->
         </div>
 
-        <div class="header-actions">
-          <button class="icon-button" title="New Chat" id="newChatBtn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-                            <path d="M12 5v14M5 12h14"></path>
-                        </svg>
-                    </button>
-          <button class="icon-button" title="Settings">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-                            <circle cx="12" cy="12" r="3"></circle>
-                            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"></path>
-                        </svg>
-                    </button>
+        <!-- Extra top-right controls -->
+        <div style="display: flex; gap: 12px;">
+          <div class="avatar"><i class="ph ph-gear text-muted"></i></div>
         </div>
       </header>
 
-      <div class="chat-container" id="chatContainer">
-        <!-- Messages will be inserted here -->
+      <!-- Chat / Code Interface -->
+      <div class="chat-area" id="chat-area">
+
+        <!-- Initial Mock AI Message -->
+        <div class="message ai">
+          <div class="avatar" id="chat-ai-avatar">
+            <i class="ph ph-sparkle" style="color: var(--neon-blue-secondary)"></i>
+          </div>
+          <div class="message-bubble">
+            System initialized. Select an AI model from the sidebar to begin building.
+            I am ready for high-performance reasoning and code generation.
+          </div>
+        </div>
+
       </div>
 
-      <div class="input-container">
-        <div class="input-wrapper">
-          <div class="input-inner">
-            <textarea
-                            class="input-field"
-                            id="messageInput"
-                            placeholder="Ask me to write code, debug, or explain..."
-                            rows="1"
-                        ></textarea>
-            <button class="send-button" id="sendButton" disabled>
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-                                <line x1="22" y1="2" x2="11" y2="13"></line>
-                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                            </svg>
-                        </button>
-          </div>
+      <!-- Input Area -->
+      <div class="input-region">
+        <div class="input-glass-container" id="input-wrapper">
+          <i class="ph ph-magic-wand" style="color: rgba(255,255,255,0.3); font-size: 20px; padding-bottom: 12px;"></i>
+          <textarea id="prompt-input" placeholder="Initiate sequence or paste code..."></textarea>
+          <button class="send-btn">
+                        <i class="ph ph-arrow-up"></i>
+                    </button>
         </div>
       </div>
     </main>
   </div>
 
+  <!-- Dynamic JS Connection -->
   <script type="module">
-    import { models } from './models.js';
+    // IMPORTANT: Directly connects to models.js.
+        // Any models added to models.js will instantly render here without HTML edits.
+        import { models } from './models.js';
 
         // State
-        let activeModel = null;
-        let chatHistory = [];
+        let currentModel = models[0];
 
         // DOM Elements
-        const modelSelector = document.getElementById('modelSelector');
-        const chatContainer = document.getElementById('chatContainer');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-        const activeModelLogo = document.getElementById('activeModelLogo');
-        const activeModelName = document.getElementById('activeModelName');
-        const menuButton = document.getElementById('menuButton');
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        const newChatBtn = document.getElementById('newChatBtn');
-
-        // Initialize Models
-        function initModels() {
-            models.forEach((model, index) => {
+        const modelListEl = document.getElementById('model-list');
+        const headerEl = document.getElementById('current-model-header');
+        const aiAvatarEl = document.getElementById('chat-ai-avatar');
+        
+        // Render Sidebar Models
+        function renderModels() {
+            modelListEl.innerHTML = '';
+            
+            models.forEach(model => {
                 const card = document.createElement('div');
-                card.className = 'model-card';
-                card.dataset.modelId = model.id;
+                card.className = `model-card ${model.id === currentModel.id ? 'active' : ''}`;
                 
-                const logoImg = document.createElement('img');
-                logoImg.src = model.logoUrl;
-                logoImg.alt = model.name;
-                logoImg.onerror = function() {
-                    this.style.display = 'none';
-                };
+                card.innerHTML = `
+                    <div class="model-icon-wrapper">
+                        <img src="${model.logoUrl}" class="model-icon" alt="${model.provider}">
+                    </div>
+                    <div class="model-info">
+                        <div class="model-name">
+                            ${model.name}
+                            <span class="badge">${model.badge}</span>
+                        </div>
+                        <div class="model-provider">${model.provider}</div>
+                    </div>
+                `;
                 
-                const modelLogoDiv = document.createElement('div');
-                modelLogoDiv.className = 'model-logo';
-                modelLogoDiv.appendChild(logoImg);
-                
-                const modelInfoDiv = document.createElement('div');
-                modelInfoDiv.className = 'model-info';
-                
-                const modelNameDiv = document.createElement('div');
-                modelNameDiv.className = 'model-name';
-                modelNameDiv.textContent = model.name;
-                
-                const modelProviderDiv = document.createElement('div');
-                modelProviderDiv.className = 'model-provider';
-                modelProviderDiv.textContent = model.provider;
-                
-                modelInfoDiv.appendChild(modelNameDiv);
-                modelInfoDiv.appendChild(modelProviderDiv);
-                
-                const headerDiv = document.createElement('div');
-                headerDiv.className = 'model-card-header';
-                headerDiv.appendChild(modelLogoDiv);
-                headerDiv.appendChild(modelInfoDiv);
-                
-                const descDiv = document.createElement('div');
-                descDiv.className = 'model-description';
-                descDiv.textContent = model.description;
-                
-                const badgeDiv = document.createElement('div');
-                badgeDiv.className = 'model-badge';
-                badgeDiv.innerHTML = '<span class="badge-dot"></span>' + model.badge;
-                
-                card.appendChild(headerDiv);
-                card.appendChild(descDiv);
-                card.appendChild(badgeDiv);
-                
-                card.addEventListener('click', () => selectModel(model));
-                
-                // Mouse move effect for cards
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = ((e.clientX - rect.left) / rect.width) * 100;
-                    const y = ((e.clientY - rect.top) / rect.height) * 100;
-                    card.style.setProperty('--x', x + '%');
-                    card.style.setProperty('--y', y + '%');
+                card.addEventListener('click', () => {
+                    currentModel = model;
+                    renderModels(); // Refresh active states
+                    updateWorkspace(); // Update header
                 });
-
-                modelSelector.appendChild(card);
-
-                // Auto-select first model
-                if (index === 0) {
-                    selectModel(model);
-                }
-            });
-        }
-
-        // Select Model
-        function selectModel(model) {
-            activeModel = model;
-            
-            // Update UI
-            document.querySelectorAll('.model-card').forEach(card => {
-                card.classList.toggle('active', card.dataset.modelId === model.id);
-            });
-
-            activeModelName.textContent = model.name;
-            
-            const logoImg = document.createElement('img');
-            logoImg.src = model.logoUrl;
-            logoImg.alt = model.name;
-            logoImg.onerror = function() {
-                this.style.display = 'none';
-            };
-            
-            activeModelLogo.innerHTML = '';
-            activeModelLogo.appendChild(logoImg);
-
-            // Close sidebar on mobile
-            if (window.innerWidth <= 768) {
-                sidebar.classList.remove('active');
-                sidebarOverlay.classList.remove('active');
-            }
-
-            // Add system message
-            if (chatHistory.length === 0) {
-                addMessage('ai', "Hello! I'm " + model.name + " by " + model.provider + ". I'm ready to help you with coding tasks. What would you like to work on?");
-            }
-        }
-
-        // Add Message
-        function addMessage(type, content, showTyping = false) {
-            const message = document.createElement('div');
-            message.className = 'message ' + type;
-            
-            const time = new Date().toLocaleTimeString('en-US', { 
-                hour: 'numeric', 
-                minute: '2-digit',
-                hour12: true 
-            });
-
-            let avatarHTML;
-            if (type === 'ai') {
-                const logoImg = document.createElement('img');
-                logoImg.src = activeModel.logoUrl;
-                logoImg.alt = 'AI';
-                logoImg.onerror = function() {
-                    this.style.display = 'none';
-                };
-                avatarHTML = '<div class="message-avatar ai"></div>';
-                message.innerHTML = avatarHTML;
-                const avatar = message.querySelector('.message-avatar');
-                avatar.appendChild(logoImg);
-            } else {
-                avatarHTML = '<div class="message-avatar user"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>';
-                message.innerHTML = avatarHTML;
-            }
-
-            const headerDiv = document.createElement('div');
-            headerDiv.className = 'message-header';
-            headerDiv.innerHTML = '<span class="message-sender">' + (type === 'ai' ? activeModel.name : 'You') + '</span><span class="message-time">' + time + '</span>';
-            
-            const avatarEl = message.querySelector('.message-avatar');
-            message.insertBefore(headerDiv, avatarEl.nextSibling);
-
-            if (showTyping) {
-                const typingDiv = document.createElement('div');
-                typingDiv.className = 'typing-indicator';
-                typingDiv.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-                message.appendChild(typingDiv);
-            } else {
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'message-content';
-                contentDiv.innerHTML = content;
-                message.appendChild(contentDiv);
-            }
-
-            chatContainer.appendChild(message);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-
-            return message;
-        }
-
-        // Send Message
-        async function sendMessage() {
-            const content = messageInput.value.trim();
-            if (!content || !activeModel) return;
-
-            // Add user message
-            addMessage('user', content);
-            chatHistory.push({ role: 'user', content: content });
-
-            // Clear input
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
-            sendButton.disabled = true;
-
-            // Show typing indicator
-            const typingMessage = addMessage('ai', '', true);
-
-            try {
-                // Call AI API
-                const response = await fetch(activeModel.endpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + activeModel.apiKey
-                    },
-                    body: JSON.stringify({
-                        model: activeModel.id,
-                        messages: chatHistory,
-                        temperature: 0.7,
-                        max_tokens: 2000
-                    })
-                });
-
-                const data = await response.json();
                 
-                // Remove typing indicator
-                typingMessage.remove();
-
-                if (data.choices && data.choices[0]) {
-                    const aiMessage = data.choices[0].message.content;
-                    chatHistory.push({ role: 'assistant', content: aiMessage });
-                    
-                    // Format message (basic markdown support)
-                    let formattedMessage = aiMessage;
-                    formattedMessage = formattedMessage.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
-                    formattedMessage = formattedMessage.replace(/`([^`]+)`/g, '<code>$1</code>');
-                    formattedMessage = formattedMessage.replace(/\n/g, '<br>');
-                    
-                    addMessage('ai', formattedMessage);
-                } else {
-                    addMessage('ai', 'Sorry, I encountered an error. Please try again.');
-                }
-            } catch (error) {
-                // Remove typing indicator
-                typingMessage.remove();
-                addMessage('ai', 'Sorry, I encountered an error. Please check your connection and try again.');
-                console.error('API Error:', error);
-            }
+                modelListEl.appendChild(card);
+            });
         }
 
-        // Auto-resize textarea
-        messageInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-            sendButton.disabled = this.value.trim().length === 0;
+        // Update Workspace Header based on selection
+        function updateWorkspace() {
+            headerEl.innerHTML = `
+                <img src="${currentModel.logoUrl}" class="current-model-icon" alt="${currentModel.name}">
+                <div class="current-model-text">
+                    <h2>${currentModel.name}</h2>
+                    <p>${currentModel.description}</p>
+                </div>
+            `;
+            
+            // Update AI avatar in chat mockup
+            aiAvatarEl.innerHTML = `<img src="${currentModel.logoUrl}" alt="${currentModel.name}">`;
+        }
+
+        // Handle Volumetric Refractive Input Border (Luminescent Obsidian style)
+        const textarea = document.getElementById('prompt-input');
+        const inputWrapper = document.getElementById('input-wrapper');
+
+        textarea.addEventListener('focus', () => {
+            inputWrapper.classList.add('focused');
         });
 
-        // Send on Enter (Shift+Enter for new line)
-        messageInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
+        textarea.addEventListener('blur', () => {
+            inputWrapper.classList.remove('focused');
         });
 
-        // Send button click
-        sendButton.addEventListener('click', sendMessage);
-
-        // New chat button
-        newChatBtn.addEventListener('click', function() {
-            chatHistory = [];
-            chatContainer.innerHTML = '';
-            if (activeModel) {
-                addMessage('ai', 'New conversation started. How can I help you?');
-            }
-        });
-
-        // Mobile menu
-        menuButton.addEventListener('click', () => {
-            sidebar.classList.add('active');
-            sidebarOverlay.classList.add('active');
-        });
-
-        sidebarOverlay.addEventListener('click', () => {
-            sidebar.classList.remove('active');
-            sidebarOverlay.classList.remove('active');
-        });
-
-        // Initialize
-        initModels();
+        // Initialize UI
+        if(models && models.length > 0) {
+            renderModels();
+            updateWorkspace();
+        }
   </script>
 </body>
 
