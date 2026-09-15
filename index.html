@@ -1,237 +1,613 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
-<meta name="theme-color" content="#e9eef5"/>
-<title>Beat Hop</title>
-<style>
-  :root{
-    --ink:#33304a;
-    --paper:#ffffff;
-    --paper-2:#f6f8fc;
-    --accent:#ff8a68;
-    --accent-2:#ffb090;
-    --mint:#7ed6ba;
-    --sky:#8db8ea;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{
-    width:100%;height:100%;overflow:hidden;background:#e9eef5;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;
-    -webkit-user-select:none;user-select:none;overscroll-behavior:none;
-    touch-action:none;
-  }
-  canvas{display:block;position:fixed;inset:0;width:100%;height:100%;}
+  <meta charset="utf-8" />
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="theme-color" content="#e9eef5" />
+  <title>Beat Hop</title>
+  <style>
+    :root {
+      --ink: #33304a;
+      --paper: #ffffff;
+      --paper-2: #f6f8fc;
+      --page: #e9eef5;
+      --accent: #ff8a68;
+      --accent-2: #ffb090;
+      --mint: #7ed6ba;
+      --sky: #8db8ea;
+    }
 
-  #ui{position:fixed;inset:0;pointer-events:none;z-index:10;}
-  .screen{
-    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    padding:22px;pointer-events:auto;
-    padding-top:calc(22px + env(safe-area-inset-top));
-    padding-bottom:calc(22px + env(safe-area-inset-bottom));
-  }
-  .hidden{display:none !important;}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-  .card{
-    position:relative;
-    background:var(--paper);
-    border:3px solid var(--ink);
-    border-radius:30px;
-    padding:32px 30px 28px;
-    box-shadow:0 10px 0 var(--ink), 0 18px 32px rgba(51,48,74,0.18);
-    text-align:center;max-width:460px;width:100%;
-  }
-  .card::before{
-    content:"";position:absolute;inset:5px;border-radius:24px;
-    border:1px dashed rgba(51,48,74,0.12);pointer-events:none;
-  }
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--page, #e9eef5);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif;
+      -webkit-user-select: none;
+      user-select: none;
+      overscroll-behavior: none;
+      touch-action: none;
+      transition: background .6s ease;
+    }
 
-  h1{
-    font-size:42px;font-weight:900;letter-spacing:0.18em;color:#fff;
-    -webkit-text-stroke:4px var(--ink);paint-order:stroke fill;
-    text-shadow:0 6px 0 var(--ink), 0 10px 18px rgba(51,48,74,0.22);
-    margin:4px 0 14px 0.18em;
-  }
-  h2{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:0.06em;margin-bottom:12px;}
-  .sub{font-size:15px;line-height:1.5;color:#6b6a80;margin-bottom:24px;font-weight:500;}
-  .hint{font-size:11.5px;color:#9a99ad;margin-top:20px;letter-spacing:0.14em;font-weight:700;text-transform:uppercase;}
+    canvas {
+      display: block;
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
 
-  .btn{
-    display:block;width:100%;padding:16px 20px;border-radius:18px;
-    border:3px solid var(--ink);font-family:inherit;font-size:17px;font-weight:900;
-    letter-spacing:0.08em;cursor:pointer;margin-bottom:14px;position:relative;
-    transition:transform .09s cubic-bezier(.2,.7,.3,1), box-shadow .09s cubic-bezier(.2,.7,.3,1);
-    -webkit-appearance:none;text-transform:uppercase;
-  }
-  .btn:last-child{margin-bottom:0;}
-  .btn.primary{
-    background:linear-gradient(180deg,var(--accent-2) 0%,var(--accent) 100%);
-    color:#fff;text-shadow:0 2px 0 rgba(51,48,74,0.35);
-    box-shadow:0 7px 0 var(--ink), 0 12px 22px rgba(255,122,89,0.28);
-  }
-  .btn.ghost{
-    background:linear-gradient(180deg,#ffffff 0%,#eef1f8 100%);
-    color:var(--ink);
-    box-shadow:0 7px 0 var(--ink), 0 12px 22px rgba(51,48,74,0.14);
-  }
-  .btn:active{
-    transform:translateY(6px);
-    box-shadow:0 1px 0 var(--ink), 0 3px 8px rgba(51,48,74,0.22);
-  }
-  .btn.primary:active{box-shadow:0 1px 0 var(--ink), 0 3px 8px rgba(255,122,89,0.30);}
-  #file{display:none;}
+    #ui {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
 
-  .bar{
-    width:100%;height:14px;border-radius:99px;background:#eef0f7;
-    border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);
-    overflow:hidden;margin:20px 0 18px;position:relative;
-  }
-  #barFill{
-    height:100%;width:0%;border-radius:99px;
-    background:linear-gradient(90deg,var(--mint),var(--sky));
-    transition:width .3s cubic-bezier(.4,.6,.4,1);position:relative;
-  }
-  #barFill::after{
-    content:"";position:absolute;inset:0;
-    background:linear-gradient(180deg,rgba(255,255,255,0.35),transparent 55%);
-    border-radius:99px;
-  }
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      pointer-events: auto;
+      padding-top: calc(22px + env(safe-area-inset-top));
+      padding-bottom: calc(22px + env(safe-area-inset-bottom));
+      animation: screenIn .3s ease both;
+    }
 
-  #hud{position:absolute;inset:0;pointer-events:none;}
-  #scoreBox{position:absolute;top:calc(16px + env(safe-area-inset-top));left:20px;text-align:left;}
-  #score{
-    font-size:38px;font-weight:900;color:#fff;letter-spacing:0.02em;
-    -webkit-text-stroke:3px var(--ink);paint-order:stroke fill;
-    text-shadow:0 5px 0 var(--ink), 0 8px 16px rgba(51,48,74,0.22);
-    font-variant-numeric:tabular-nums;line-height:1;
-  }
-  #combo{
-    font-size:13px;font-weight:900;color:var(--accent);letter-spacing:0.18em;
-    height:18px;margin-top:8px;-webkit-text-stroke:2px var(--ink);
-    paint-order:stroke fill;text-shadow:0 3px 0 var(--ink);
-    opacity:0;transition:opacity .2s;
-  }
-  #combo.on{opacity:1;}
-  #bpmTag{
-    position:absolute;top:calc(18px + env(safe-area-inset-top));right:20px;
-    font-size:12px;font-weight:900;color:var(--ink);letter-spacing:0.16em;
-    background:#fff;padding:7px 14px;border-radius:99px;
-    border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);
-  }
+    @keyframes screenIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
 
-  #feedback{
-    position:absolute;left:50%;top:28%;transform:translate(-50%,-50%) scale(0.6);
-    font-size:34px;font-weight:900;letter-spacing:0.20em;opacity:0;
-    pointer-events:none;white-space:nowrap;
-    -webkit-text-stroke:4px var(--ink);paint-order:stroke fill;
-    text-shadow:0 7px 0 var(--ink), 0 12px 20px rgba(51,48,74,0.22);
-  }
-  #feedback.show{animation:pop .6s cubic-bezier(.2,1.35,.4,1) forwards;}
-  @keyframes pop{
-    0%{opacity:0;transform:translate(-50%,-50%) scale(0.55) rotate(-3deg);}
-    22%{opacity:1;transform:translate(-50%,-50%) scale(1.14) rotate(1.5deg);}
-    60%{opacity:1;transform:translate(-50%,-50%) scale(1.0) rotate(0deg);}
-    100%{opacity:0;transform:translate(-50%,-64%) scale(0.98) rotate(0deg);}
-  }
-  .f-perfect{color:#ffd9c2;}
-  .f-good{color:#bdf0dc;}
-  .f-ok{color:#d5d3e4;}
-  .f-miss{color:#d8d6e4;}
+    .hidden { display: none !important; }
 
-  #tapHint{
-    position:absolute;left:50%;bottom:calc(34px + env(safe-area-inset-bottom));
-    transform:translateX(-50%);
-    font-size:12px;letter-spacing:0.26em;font-weight:900;color:var(--ink);
-    background:rgba(255,255,255,0.85);padding:8px 16px;border-radius:99px;
-    border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);
-    animation:breathe 2.2s ease-in-out infinite;transition:opacity .8s ease;
-  }
-  @keyframes breathe{
-    0%,100%{transform:translateX(-50%) translateY(0);}
-    50%{transform:translateX(-50%) translateY(-3px);}
-  }
+    .card {
+      position: relative;
+      background: var(--paper);
+      border: 3px solid var(--ink);
+      border-radius: 30px;
+      padding: 30px 30px 26px;
+      box-shadow: 0 10px 0 var(--ink), 0 18px 32px rgba(51, 48, 74, 0.18);
+      text-align: center;
+      max-width: 440px;
+      width: 100%;
+      animation: cardIn .46s cubic-bezier(.2, 1.12, .34, 1) both;
+      transition: box-shadow .3s ease, border-color .5s ease;
+    }
 
-  .bigScore{
-    font-size:56px;font-weight:900;color:#fff;letter-spacing:0.01em;
-    -webkit-text-stroke:4px var(--ink);paint-order:stroke fill;
-    text-shadow:0 8px 0 var(--ink), 0 14px 22px rgba(51,48,74,0.22);
-    margin:6px 0 8px;font-variant-numeric:tabular-nums;
-  }
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0 26px;}
-  .stat{
-    background:var(--paper-2);border:3px solid var(--ink);border-radius:14px;
-    padding:10px 6px 8px;box-shadow:0 4px 0 var(--ink);
-    font-size:10px;letter-spacing:0.14em;font-weight:900;color:#8a89a0;
-  }
-  .stat b{
-    display:block;font-size:22px;color:var(--ink);letter-spacing:0;
-    margin-bottom:3px;font-variant-numeric:tabular-nums;
-    text-shadow:0 2px 0 rgba(51,48,74,0.12);
-  }
-  .stat.wide{grid-column:span 3;}
-  .stat.wide b{font-size:18px;}
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(18px) scale(.955); }
+      to { opacity: 1; transform: none; }
+    }
 
-  #vignette{
-    position:fixed;inset:0;pointer-events:none;z-index:5;
-    background:radial-gradient(ellipse at 50% 42%,
-      rgba(0,0,0,0) 42%, rgba(70,80,120,0.16) 100%);
-  }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border-radius: 24px;
+      border: 1px dashed rgba(51, 48, 74, 0.12);
+      pointer-events: none;
+    }
 
-  .dots::after{content:"";animation:dots 1.4s steps(4,end) infinite;}
-  @keyframes dots{0%{content:"";}25%{content:".";}50%{content:"..";}75%{content:"...";}}
-</style>
+    /* ---------- logo block ---------- */
+    .logo { margin: 2px 0 18px; }
+
+    h1 {
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      color: #fff;
+      -webkit-text-stroke: 4px var(--ink);
+      paint-order: stroke fill;
+      text-shadow: 0 6px 0 var(--ink), 0 10px 18px rgba(51, 48, 74, 0.22);
+      margin: 0 0 0 0.18em;
+      line-height: 1.05;
+    }
+
+    .eq {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 5px;
+      height: 24px;
+      margin-top: 12px;
+    }
+
+    .eq span {
+      width: 6px;
+      height: 8px;
+      border-radius: 99px;
+      background: linear-gradient(180deg, var(--accent-2), var(--accent));
+      box-shadow: 0 2px 0 var(--ink);
+      animation: eq 1.15s ease-in-out infinite;
+      transition: background .5s ease;
+    }
+
+    .eq span:nth-child(2) { animation-delay: .13s; background: linear-gradient(180deg, #b9ecdb, var(--mint)); }
+    .eq span:nth-child(3) { animation-delay: .26s; }
+    .eq span:nth-child(4) { animation-delay: .07s; background: linear-gradient(180deg, #c6dcf7, var(--sky)); }
+    .eq span:nth-child(5) { animation-delay: .33s; }
+    .eq span:nth-child(6) { animation-delay: .19s; background: linear-gradient(180deg, #b9ecdb, var(--mint)); }
+    .eq span:nth-child(7) { animation-delay: .40s; }
+
+    @keyframes eq {
+      0%, 100% { height: 7px; }
+      50% { height: 22px; }
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+    }
+
+    .sub {
+      font-size: 14.5px;
+      line-height: 1.55;
+      color: #6b6a80;
+      margin: 0 auto 24px;
+      font-weight: 500;
+      max-width: 300px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .chip {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: #8a89a0;
+      background: var(--paper-2);
+      border: 2px solid rgba(0, 0, 0, .08);
+      padding: 6px 11px;
+      border-radius: 99px;
+      transition: background .5s ease;
+    }
+
+    /* ---------- buttons ---------- */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 16px 20px;
+      border-radius: 18px;
+      border: 3px solid var(--ink);
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .1s cubic-bezier(.2, .7, .3, 1),
+        box-shadow .1s cubic-bezier(.2, .7, .3, 1),
+        border-color .5s ease;
+      -webkit-appearance: none;
+      text-transform: uppercase;
+    }
+
+    .btn:last-child { margin-bottom: 0; }
+
+    .btn::after {
+      content: "";
+      position: absolute;
+      top: -25%;
+      left: -75%;
+      width: 45%;
+      height: 150%;
+      background: linear-gradient(100deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, .62) 50%,
+          rgba(255, 255, 255, 0) 100%);
+      transform: skewX(-16deg);
+      transition: left .62s cubic-bezier(.25, .8, .3, 1);
+      pointer-events: none;
+    }
+
+    .btn:hover::after { left: 140%; }
+
+    .btn.primary {
+      background: linear-gradient(180deg, var(--accent-2) 0%, var(--accent) 100%);
+      color: #fff;
+      text-shadow: 0 2px 0 rgba(51, 48, 74, 0.35);
+      box-shadow: 0 7px 0 var(--ink), 0 12px 22px rgba(255, 122, 89, 0.28);
+      transition: transform .1s cubic-bezier(.2, .7, .3, 1),
+        box-shadow .1s cubic-bezier(.2, .7, .3, 1);
+    }
+
+    .btn.ghost {
+      background: linear-gradient(180deg, #ffffff 0%, #eef1f8 100%);
+      color: var(--ink);
+      box-shadow: 0 7px 0 var(--ink), 0 12px 22px rgba(51, 48, 74, 0.14);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .btn:hover { transform: translateY(-3px); }
+      .btn.primary:hover { box-shadow: 0 10px 0 var(--ink), 0 18px 26px rgba(255, 122, 89, 0.34); }
+      .btn.ghost:hover { box-shadow: 0 10px 0 var(--ink), 0 18px 26px rgba(51, 48, 74, 0.18); }
+    }
+
+    .btn:active { transform: translateY(6px); box-shadow: 0 1px 0 var(--ink), 0 3px 8px rgba(51, 48, 74, 0.22); }
+    .btn.primary:active { box-shadow: 0 1px 0 var(--ink), 0 3px 8px rgba(255, 122, 89, 0.30); }
+
+    #file { display: none; }
+
+    .bar {
+      width: 100%;
+      height: 14px;
+      border-radius: 99px;
+      background: #eef0f7;
+      border: 3px solid var(--ink);
+      box-shadow: 0 4px 0 var(--ink);
+      overflow: hidden;
+      margin: 20px 0 18px;
+      position: relative;
+    }
+
+    #barFill {
+      height: 100%;
+      width: 0%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--mint), var(--sky));
+      transition: width .3s cubic-bezier(.4, .6, .4, 1);
+      position: relative;
+    }
+
+    #barFill::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 55%);
+      border-radius: 99px;
+    }
+
+    #hud { position: absolute; inset: 0; pointer-events: none; }
+
+    #scoreBox {
+      position: absolute;
+      top: calc(16px + env(safe-area-inset-top));
+      left: 20px;
+      text-align: left;
+    }
+
+    #score {
+      font-size: 38px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 0.02em;
+      -webkit-text-stroke: 3px var(--ink);
+      paint-order: stroke fill;
+      text-shadow: 0 5px 0 var(--ink), 0 8px 16px rgba(51, 48, 74, 0.22);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      transform-origin: left center;
+      transition: -webkit-text-stroke-color .5s ease;
+    }
+
+    #score.pop { animation: scorePop .34s cubic-bezier(.2, 1.4, .4, 1); }
+
+    @keyframes scorePop {
+      0% { transform: scale(1); }
+      38% { transform: scale(1.18) rotate(-1.5deg); }
+      100% { transform: scale(1); }
+    }
+
+    #combo {
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--accent);
+      letter-spacing: 0.18em;
+      height: 18px;
+      margin-top: 8px;
+      -webkit-text-stroke: 2px var(--ink);
+      paint-order: stroke fill;
+      text-shadow: 0 3px 0 var(--ink);
+      opacity: 0;
+      transition: opacity .2s, color .5s ease;
+    }
+
+    #combo.on { opacity: 1; }
+
+    /* ---- timing meter ---- */
+    #timing {
+      width: 118px;
+      height: 10px;
+      margin-top: 11px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, .62);
+      border: 3px solid var(--ink);
+      box-shadow: 0 3px 0 var(--ink);
+      position: relative;
+      opacity: 0;
+      transition: opacity .3s ease;
+    }
+
+    #timing.on { opacity: 1; }
+
+    #timing::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -4px;
+      bottom: -4px;
+      width: 3px;
+      border-radius: 2px;
+      background: var(--ink);
+      opacity: .38;
+      transform: translateX(-50%);
+    }
+
+    #timingMark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 7px;
+      height: 18px;
+      margin-left: -3.5px;
+      margin-top: -9px;
+      border-radius: 4px;
+      background: var(--mint);
+      border: 2.5px solid var(--ink);
+      transition: left .13s cubic-bezier(.2, .9, .3, 1), background .18s ease;
+    }
+
+    /* ---- flow tag ---- */
+    #flowTag {
+      position: absolute;
+      top: calc(18px + env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%) translateY(-8px) scale(.86);
+      font-size: 11.5px;
+      font-weight: 900;
+      letter-spacing: 0.24em;
+      padding: 8px 16px 7px;
+      border-radius: 99px;
+      border: 3px solid var(--ink);
+      background: linear-gradient(180deg, #fff, var(--accent-2));
+      color: var(--ink);
+      box-shadow: 0 4px 0 var(--ink), 0 0 22px rgba(255, 160, 120, .55);
+      opacity: 0;
+      transition: opacity .28s ease, transform .28s cubic-bezier(.2, 1.3, .4, 1);
+    }
+
+    #flowTag.on { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+
+    #bpmTag {
+      position: absolute;
+      top: calc(18px + env(safe-area-inset-top));
+      right: 20px;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--ink);
+      letter-spacing: 0.16em;
+      background: #fff;
+      padding: 7px 14px;
+      border-radius: 99px;
+      border: 3px solid var(--ink);
+      box-shadow: 0 4px 0 var(--ink);
+      transition: border-color .5s ease, box-shadow .5s ease;
+    }
+
+    #feedback {
+      position: absolute;
+      left: 50%;
+      top: 28%;
+      transform: translate(-50%, -50%) scale(0.6);
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: 0.20em;
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      -webkit-text-stroke: 4px var(--ink);
+      paint-order: stroke fill;
+      text-shadow: 0 7px 0 var(--ink), 0 12px 20px rgba(51, 48, 74, 0.22);
+    }
+
+    #feedback.show { animation: pop .6s cubic-bezier(.2, 1.35, .4, 1) forwards; }
+
+    @keyframes pop {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.55) rotate(-3deg); }
+      22% { opacity: 1; transform: translate(-50%, -50%) scale(1.14) rotate(1.5deg); }
+      60% { opacity: 1; transform: translate(-50%, -50%) scale(1.0) rotate(0deg); }
+      100% { opacity: 0; transform: translate(-50%, -64%) scale(0.98) rotate(0deg); }
+    }
+
+    .f-perfect { color: #ffd9c2; }
+    .f-good { color: #bdf0dc; }
+    .f-ok { color: #d5d3e4; }
+    .f-miss { color: #d8d6e4; }
+
+    #tapHint {
+      position: absolute;
+      left: 50%;
+      bottom: calc(34px + env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      font-size: 12px;
+      letter-spacing: 0.26em;
+      font-weight: 900;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.85);
+      padding: 8px 16px;
+      border-radius: 99px;
+      border: 3px solid var(--ink);
+      box-shadow: 0 4px 0 var(--ink);
+      animation: breathe 2.2s ease-in-out infinite;
+      transition: opacity .8s ease;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-3px); }
+    }
+
+    .bigScore {
+      font-size: 56px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 0.01em;
+      -webkit-text-stroke: 4px var(--ink);
+      paint-order: stroke fill;
+      text-shadow: 0 8px 0 var(--ink), 0 14px 22px rgba(51, 48, 74, 0.22);
+      margin: 6px 0 8px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 22px 0 26px;
+    }
+
+    .stat {
+      background: var(--paper-2);
+      border: 3px solid var(--ink);
+      border-radius: 14px;
+      padding: 10px 6px 8px;
+      box-shadow: 0 4px 0 var(--ink);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      font-weight: 900;
+      color: #8a89a0;
+      transition: background .5s ease;
+    }
+
+    .stat b {
+      display: block;
+      font-size: 22px;
+      color: var(--ink);
+      letter-spacing: 0;
+      margin-bottom: 3px;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 2px 0 rgba(51, 48, 74, 0.12);
+    }
+
+    .stat.wide { grid-column: span 3; }
+    .stat.wide b { font-size: 18px; }
+
+    #vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      background: radial-gradient(ellipse at 50% 42%,
+          rgba(0, 0, 0, 0) 42%, rgba(70, 80, 120, 0.16) 100%);
+    }
+
+    .dots::after {
+      content: "";
+      animation: dots 1.4s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0% { content: ""; }
+      25% { content: "."; }
+      50% { content: ".."; }
+      75% { content: "..."; }
+    }
+
+    @media (max-height: 620px) {
+      h1 { font-size: 34px; }
+      .eq { height: 18px; margin-top: 8px; }
+      .eq span { width: 5px; }
+      @keyframes eq {
+        0%, 100% { height: 6px; }
+        50% { height: 16px; }
+      }
+      .card { padding: 22px 24px 20px; }
+      .sub { margin-bottom: 18px; }
+    }
+  </style>
 </head>
+
 <body>
-<canvas id="c"></canvas>
-<div id="vignette"></div>
+  <canvas id="c"></canvas>
+  <div id="vignette"></div>
 
-<div id="ui">
-  <div id="hud" class="hidden">
-    <div id="scoreBox">
-      <div id="score">0</div>
-      <div id="combo"></div>
+  <div id="ui">
+    <div id="hud" class="hidden">
+      <div id="scoreBox">
+        <div id="score">0</div>
+        <div id="combo"></div>
+        <div id="timing">
+          <div id="timingMark"></div>
+        </div>
+      </div>
+      <div id="flowTag">FLOW ×2</div>
+      <div id="bpmTag">—</div>
+      <div id="feedback"></div>
+      <div id="tapHint">Tap to the beat</div>
     </div>
-    <div id="bpmTag">—</div>
-    <div id="feedback"></div>
-    <div id="tapHint">Tap to the beat</div>
+
+    <div id="menu" class="screen">
+      <div class="card">
+        <div class="logo">
+          <h1>BEAT HOP</h1>
+          <div class="eq" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+        <p class="sub">Drop in a song. It maps the kick, the snare and the hats separately — then builds a path that
+          moves the way the track does.</p>
+        <label class="btn primary" for="file">Choose a song</label>
+        <input id="file" type="file" accept="audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.oga,.caf" />
+        <button class="btn ghost" id="demo">Play the demo</button>
+        <div class="chips">
+          <span class="chip">Headphones recommended</span>
+          <span class="chip">MP3 · M4A · WAV</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="loading" class="screen hidden">
+      <div class="card">
+        <h2 id="loadTitle" class="dots">Listening</h2>
+        <div class="bar">
+          <div id="barFill"></div>
+        </div>
+        <p class="sub" id="loadSub" style="margin-bottom:0">Reading the rhythm</p>
+      </div>
+    </div>
+
+    <div id="results" class="screen hidden">
+      <div class="card">
+        <h2>Nice run</h2>
+        <div class="bigScore" id="rScore">0</div>
+        <div class="stats" id="rStats"></div>
+        <button class="btn primary" id="again">Play again</button>
+        <button class="btn ghost" id="back">New song</button>
+      </div>
+    </div>
   </div>
 
-  <div id="menu" class="screen">
-    <div class="card">
-      <h1>BEAT HOP</h1>
-      <p class="sub">Drop in a song. It finds the beat,<br/>builds a floating path, and you hop along.</p>
-      <label class="btn primary" for="file">Choose a song</label>
-      <input id="file" type="file"
-        accept="audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.oga,.caf"/>
-      <button class="btn ghost" id="demo">Play the demo</button>
-      <p class="hint">Headphones recommended</p>
-    </div>
-  </div>
-
-  <div id="loading" class="screen hidden">
-    <div class="card">
-      <h2 id="loadTitle" class="dots">Listening</h2>
-      <div class="bar"><div id="barFill"></div></div>
-      <p class="sub" id="loadSub" style="margin-bottom:0">Reading the rhythm</p>
-    </div>
-  </div>
-
-  <div id="results" class="screen hidden">
-    <div class="card">
-      <h2>Nice run</h2>
-      <div class="bigScore" id="rScore">0</div>
-      <div class="stats" id="rStats"></div>
-      <button class="btn primary" id="again">Play again</button>
-      <button class="btn ghost" id="back">New song</button>
-    </div>
-  </div>
-</div>
-
-<script type="module">
-import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+  <script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
 /* ============================================================
    DOM
@@ -242,8 +618,11 @@ const hudEl = $('hud'), scoreEl = $('score'), comboEl = $('combo');
 const bpmTag = $('bpmTag'), feedbackEl = $('feedback');
 const barFill = $('barFill'), loadTitle = $('loadTitle'), loadSub = $('loadSub');
 const tapHint = $('tapHint'), fileInput = $('file');
+const timingEl = $('timing'), timingMark = $('timingMark'), flowTag = $('flowTag');
 
 const nextFrame = () => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+const clamp = (v, a, b) => v < a ? a : (v > b ? b : v);
+const wrapHue = h => ((h % 360) + 360) % 360;
 
 /* ============================================================
    THREE
@@ -256,13 +635,15 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 const BG = new THREE.Color(0xe9eef5);
 const scene = new THREE.Scene();
-scene.background = BG;
-scene.fog = new THREE.Fog(BG, 26, 78);
+scene.background = BG.clone();
+scene.fog = new THREE.Fog(BG.clone(), 26, 78);
 
-const camera = new THREE.PerspectiveCamera(46, window.innerWidth / window.innerHeight, 0.1, 400);
+const BASE_FOV = 46;
+const camera = new THREE.PerspectiveCamera(BASE_FOV, window.innerWidth / window.innerHeight, 0.1, 400);
 camera.position.set(7.0, 6.4, 10.0);
 
 scene.add(new THREE.HemisphereLight(0xffffff, 0xc4d6e8, 1.9));
+const hemiLight = scene.children[scene.children.length - 1];
 const keyLight = new THREE.DirectionalLight(0xffffff, 2.05);
 keyLight.position.set(6, 14, 9); scene.add(keyLight);
 const rimLight = new THREE.DirectionalLight(0xffd8c0, 0.7);
@@ -278,7 +659,61 @@ gradientMap.needsUpdate = true;
 const INK = 0x33304a;
 const outlineMat = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
 
-/* ---- Ambient particles ---- */
+/* ---- Sky gradient backdrop ---------------------------------- */
+let skyTexture = null;
+function makeSkyTexture(bg, paper2, ink) {
+  const c = document.createElement('canvas');
+  c.width = 4; c.height = 256;
+  const g = c.getContext('2d');
+  const top = bg.clone().lerp(ink, 0.22).lerp(paper2, 0.10);
+  const mid = bg.clone();
+  const bot = bg.clone().lerp(paper2, 0.85);
+  const grad = g.createLinearGradient(0, 0, 0, 256);
+  grad.addColorStop(0.00, top.getStyle());
+  grad.addColorStop(0.55, mid.getStyle());
+  grad.addColorStop(1.00, bot.getStyle());
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 4, 256);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.minFilter = THREE.LinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  return tex;
+}
+
+/* ---- Ground grid (depth cue, kills the flat pastel void) ---- */
+const grid = new THREE.GridHelper(420, 84, 0xffffff, 0xffffff);
+grid.material.transparent = true;
+grid.material.opacity = 0.085;
+grid.material.depthWrite = false;
+grid.position.y = -0.06;
+scene.add(grid);
+
+/* ---- Spectrum backdrop bars ---------------------------------- */
+const BAR_N = 28;
+const BAR_HALF = BAR_N >> 1;
+const barGeo = new THREE.BoxGeometry(0.32, 1, 0.32);
+barGeo.translate(0, 0.5, 0);
+const barGroup = new THREE.Group();
+scene.add(barGroup);
+const bars = [];
+const binForBar = new Array(BAR_N);
+for (let k = 0; k < BAR_HALF; k++) {
+  binForBar[BAR_HALF - 1 - k] = k * 2;
+  binForBar[BAR_HALF + k] = k * 2 + 1;
+}
+for (let i = 0; i < BAR_N; i++) {
+  const m = new THREE.Mesh(barGeo, new THREE.MeshToonMaterial({
+    color: 0xffffff, gradientMap, transparent: true, opacity: 0.9
+  }));
+  const u = (i / (BAR_N - 1)) * 2 - 1;
+  m.position.set(u * 17.5, 0, -Math.abs(u) * 5.5);
+  m.userData.h = 0;
+  barGroup.add(m);
+  bars.push(m);
+}
+
+/* ---- Ambient particles --------------------------------------- */
 const particleGroup = new THREE.Group();
 scene.add(particleGroup);
 const particles = [];
@@ -294,13 +729,14 @@ const particles = [];
     p.userData.speed = 0.25 + Math.random() * 0.4;
     p.userData.phase = Math.random() * Math.PI * 2;
     p.userData.baseY = p.position.y;
-    p.userData.amp   = 0.5 + Math.random() * 0.9;
+    p.userData.amp = 0.5 + Math.random() * 0.9;
+    p.userData.baseOpacity = mat.opacity;
     particleGroup.add(p);
     particles.push(p);
   }
 }
 
-/* ---- Tiles ---- */
+/* ---- Tiles ---------------------------------------------------- */
 const TILE_W = 1.78, TILE_H = 0.42, TILE_D = 1.78;
 const TILE_POOL = 48;
 const tileGeo = new THREE.BoxGeometry(TILE_W, TILE_H, TILE_D);
@@ -318,7 +754,7 @@ for (let i = 0; i < TILE_POOL; i++) {
   tiles.push(m);
 }
 
-/* ---- Player ---- */
+/* ---- Player --------------------------------------------------- */
 const PLAYER_R = 0.62;
 const playerGroup = new THREE.Group();
 const playerMesh = new THREE.Mesh(
@@ -331,6 +767,22 @@ playerMesh.add(playerOutline);
 playerGroup.add(playerMesh);
 scene.add(playerGroup);
 
+/* ---- Motion trail --------------------------------------------- */
+const TRAIL_N = 16;
+const trailGeo = new THREE.OctahedronGeometry(0.34, 0);
+const trailMeshes = [];
+const trailHist = [];
+for (let i = 0; i < TRAIL_N; i++) {
+  const m = new THREE.Mesh(trailGeo, new THREE.MeshBasicMaterial({
+    color: 0xff8a68, transparent: true, opacity: 0, depthWrite: false
+  }));
+  m.visible = false;
+  scene.add(m);
+  trailMeshes.push(m);
+  trailHist.push({ pos: new THREE.Vector3(), a: 0 });
+}
+let trailTimer = 0;
+
 const shadowMesh = new THREE.Mesh(
   new THREE.CircleGeometry(0.68, 28),
   new THREE.MeshBasicMaterial({ color: INK, transparent: true, opacity: 0.17, depthWrite: false, side: THREE.DoubleSide })
@@ -338,10 +790,10 @@ const shadowMesh = new THREE.Mesh(
 shadowMesh.rotation.x = -Math.PI / 2;
 scene.add(shadowMesh);
 
-/* ---- Pulse rings ---- */
+/* ---- Pulse rings ---------------------------------------------- */
 const ringGeo = new THREE.RingGeometry(0.72, 0.9, 44);
 const rings = [];
-for (let i = 0; i < 8; i++) {
+for (let i = 0; i < 10; i++) {
   const m = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({
     color: INK, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide
   }));
@@ -350,16 +802,17 @@ for (let i = 0; i < 8; i++) {
   rings.push({ mesh: m, life: -1 });
 }
 let ringCursor = 0;
-function spawnRing(pos, strong) {
+function spawnRing(pos, strong, color) {
   const r = rings[ringCursor++ % rings.length];
   r.mesh.position.set(pos.x, pos.y + 0.24, pos.z);
   r.mesh.visible = true;
   r.life = 0;
-  r.mesh.material.opacity = strong ? 0.62 : 0.30;
+  r.mesh.material.color.copy(color || theme.ring);
+  r.mesh.material.opacity = strong ? 0.66 : 0.28;
   r.mesh.scale.setScalar(0.55);
 }
 
-/* ---- Beat cue ring ---- */
+/* ---- Beat cue ring -------------------------------------------- */
 const cueRing = new THREE.Mesh(
   new THREE.RingGeometry(0.62, 0.82, 52),
   new THREE.MeshBasicMaterial({ color: INK, transparent: true, opacity: 0.4, depthWrite: false, side: THREE.DoubleSide })
@@ -369,7 +822,104 @@ cueRing.visible = false;
 scene.add(cueRing);
 
 /* ============================================================
-   AUDIO ENGINE  (fixed for iOS unlocking)
+   THEME ENGINE
+   ============================================================ */
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const SCHEMES = [
+  [0, 32, -32, 64, -64, 180],
+  [0, 180, 90, 270, 150, 210],
+  [0, 120, 240, 60, 180, 300],
+  [0, 150, 30, 210, 330, 90],
+  [0, 18, 36, 54, 72, 90],
+  [0, 45, 200, 245, 300, 160]
+];
+
+let theme = null;
+
+function makeTheme(seed) {
+  const rnd = mulberry32((seed >>> 0) || 1);
+  const h0 = rnd() * 360;
+  const scheme = SCHEMES[Math.floor(rnd() * SCHEMES.length)];
+  const satBase = 0.48 + rnd() * 0.36;
+  const lightBase = 0.68 + rnd() * 0.12;
+  const wander = 6 + rnd() * 22;
+
+  const tileCols = scheme.map((o) => {
+    const h = wrapHue(h0 + o + (rnd() - 0.5) * wander);
+    const s = clamp(satBase * (0.78 + rnd() * 0.5), 0.2, 1);
+    const l = clamp(lightBase + (rnd() - 0.5) * 0.16, 0.5, 0.94);
+    return new THREE.Color().setHSL(h / 360, s, l);
+  });
+
+  const inkH = wrapHue(h0 + 190 + rnd() * 60);
+  const ink = new THREE.Color().setHSL(inkH / 360, 0.26 + rnd() * 0.20, 0.15 + rnd() * 0.07);
+
+  const bgH = wrapHue(h0 + 30 + rnd() * 60);
+  const bg = new THREE.Color().setHSL(bgH / 360, 0.16 + rnd() * 0.20, 0.91 + rnd() * 0.05);
+
+  const paper2 = new THREE.Color().setHSL(bgH / 360, 0.18 + rnd() * 0.16, 0.965);
+
+  const playerH = wrapHue(h0 + (rnd() < 0.5 ? 180 : 0) + (rnd() - 0.5) * 60);
+  const player = new THREE.Color().setHSL(playerH / 360, 0.62 + rnd() * 0.28, 0.58 + rnd() * 0.10);
+
+  const accent = new THREE.Color().setHSL(wrapHue(h0 + 12 + rnd() * 30) / 360, 0.72 + rnd() * 0.2, 0.60 + rnd() * 0.06);
+  const accent2 = accent.clone().offsetHSL(0, -0.06, 0.10);
+  const mint = new THREE.Color().setHSL(wrapHue(h0 + 130 + rnd() * 40) / 360, 0.5 + rnd() * 0.2, 0.66);
+  const sky = new THREE.Color().setHSL(wrapHue(h0 + 215 + rnd() * 40) / 360, 0.55 + rnd() * 0.2, 0.70);
+  const particle = new THREE.Color().setHSL(wrapHue(h0 + 60) / 360, 0.30, 0.72);
+
+  return {
+    seed: seed >>> 0,
+    tiles: tileCols, ink, bg, paper2, player, particle, mint, sky,
+    ring: ink.clone().lerp(tileCols[0], 0.35),
+    accent, accent2,
+    glow: 0.55 + rnd() * 0.6
+  };
+}
+
+function applyTheme(th) {
+  theme = th;
+
+  if (skyTexture) skyTexture.dispose();
+  skyTexture = makeSkyTexture(th.bg, th.paper2, th.ink);
+  scene.background = skyTexture;
+  scene.fog.color.copy(th.bg);
+
+  outlineMat.color.copy(th.ink);
+  playerMesh.material.color.copy(th.player);
+  shadowMesh.material.color.copy(th.ink);
+  for (const r of rings) r.mesh.material.color.copy(th.ring);
+  cueRing.material.color.copy(th.ring);
+  for (const p of particles) p.material.color.copy(th.particle);
+  for (const m of trailMeshes) m.material.color.copy(th.player);
+  grid.material.color.copy(th.ink);
+  for (let i = 0; i < bars.length; i++) {
+    bars[i].material.color.copy(th.tiles[i % th.tiles.length]);
+  }
+
+  const rs = document.documentElement.style;
+  rs.setProperty('--ink', '#' + th.ink.getHexString());
+  rs.setProperty('--page', '#' + th.bg.getHexString());
+  rs.setProperty('--paper-2', '#' + th.paper2.getHexString());
+  rs.setProperty('--accent', '#' + th.accent.getHexString());
+  rs.setProperty('--accent-2', '#' + th.accent2.getHexString());
+  rs.setProperty('--mint', '#' + th.mint.getHexString());
+  rs.setProperty('--sky', '#' + th.sky.getHexString());
+
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', '#' + th.bg.getHexString());
+}
+
+/* ============================================================
+   AUDIO ENGINE
    ============================================================ */
 let actx = null;
 
@@ -377,15 +927,13 @@ function createAudioContext() {
   if (actx) return actx;
   const AC = window.AudioContext || window.webkitAudioContext;
   if (!AC) return null;
-  try {
-    actx = new AC({ latencyHint: 'interactive' });
-  } catch (e) {
+  try { actx = new AC({ latencyHint: 'interactive' }); }
+  catch (e) {
     try { actx = new AC(); } catch (e2) { console.error('AudioContext failed', e2); return null; }
   }
   return actx;
 }
 
-/* Unlock audio on first user gesture — critical for iOS Safari */
 let audioUnlocked = false;
 async function unlockAudio() {
   const ctx = createAudioContext();
@@ -394,7 +942,6 @@ async function unlockAudio() {
     try { await ctx.resume(); } catch (e) { console.warn('resume failed', e); }
   }
   if (!audioUnlocked) {
-    // Play a tiny silent buffer to prove we can
     try {
       const buf = ctx.createBuffer(1, 1, ctx.sampleRate);
       const src = ctx.createBufferSource();
@@ -406,7 +953,6 @@ async function unlockAudio() {
   }
 }
 
-/* Ensure the context is truly running (awaits the resume promise) */
 async function ensureRunning() {
   const ctx = createAudioContext();
   if (!ctx) return null;
@@ -432,24 +978,31 @@ function blip(freq, gain, dur) {
   } catch (e) { /* ignore */ }
 }
 
-/* Register unlock handlers — try on every gesture until it works */
-['touchstart','touchend','pointerdown','click','keydown'].forEach(ev => {
+['touchstart', 'touchend', 'pointerdown', 'click', 'keydown'].forEach(ev => {
   document.addEventListener(ev, () => { unlockAudio(); }, { passive: true });
 });
 
 /* ============================================================
-   BEAT ANALYSIS  (downsampled for iPad performance)
+   BEAT ANALYSIS — three bands + onset snapping
+   ------------------------------------------------------------
+   low  : kick / sub        (~30–160 Hz)
+   mid  : snare / body      (~200–2200 Hz)
+   high : hats / air        (~3.5 kHz+)
+
+   The tempo grid is only a *scaffold*. Every grid slot gets
+   snapped onto the nearest real onset, strong off-grid onsets
+   get inserted as extra beats, and beats that land in silence
+   get swallowed so a hop can stretch across the gap.
    ============================================================ */
 const MAX_ANALYSIS_SECONDS = 260;
-const ANALYSIS_SR = 11025;      // low SR is plenty for kick detection & 4x faster
-const HOP = 128;                // ~11.6 ms frames @ 11025 → ~86 fps
-const WIN = 512;                // ~46 ms window
+const ANALYSIS_SR = 11025;
+const HOP = 128;
+const WIN = 512;
 
 function computeNovelty(data, sr) {
   const frames = Math.max(2, Math.floor((data.length - WIN) / HOP) + 1);
   const env = new Float32Array(frames);
 
-  // RMS energy per frame
   for (let i = 0; i < frames; i++) {
     const o = i * HOP;
     let s = 0;
@@ -457,7 +1010,6 @@ function computeNovelty(data, sr) {
     env[i] = Math.sqrt(s / WIN);
   }
 
-  // Light smoothing
   const sm = new Float32Array(frames);
   for (let i = 0; i < frames; i++) {
     const a = env[Math.max(0, i - 1)];
@@ -466,19 +1018,38 @@ function computeNovelty(data, sr) {
     sm[i] = (a + b + c) / 3;
   }
 
-  // Positive first difference (onset strength)
   const nov = new Float32Array(frames);
+  let peak = 0;
   for (let i = 1; i < frames; i++) {
-    const d = sm[i] - sm[i - 1];
+    const d = Math.log(1 + 46 * sm[i]) - Math.log(1 + 46 * sm[i - 1]);
     nov[i] = d > 0 ? d : 0;
+    if (nov[i] > peak) peak = nov[i];
   }
 
-  // Normalize
-  let mx = 0;
-  for (let i = 0; i < frames; i++) if (nov[i] > mx) mx = nov[i];
-  if (mx > 1e-7) for (let i = 0; i < frames; i++) nov[i] /= mx;
+  return { nov, frames, fps: sr / HOP, peak };
+}
 
-  return { nov, frames, fps: sr / HOP };
+function combineBands(low, mid, high) {
+  const n = low.frames;
+  const g = Math.max(low.peak, mid.peak, high.peak) || 1;
+
+  const lo = new Float32Array(n), md = new Float32Array(n), hi = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    lo[i] = low.nov[i] / g;
+    md[i] = mid.nov[i] / g;
+    hi[i] = high.nov[i] / g;
+  }
+
+  const comb = new Float32Array(n);
+  let mx = 0;
+  for (let i = 0; i < n; i++) {
+    const v = 0.62 * lo[i] + 0.26 * md[i] + 0.12 * hi[i];
+    comb[i] = v;
+    if (v > mx) mx = v;
+  }
+  if (mx > 1e-7) for (let i = 0; i < n; i++) comb[i] /= mx;
+
+  return { low: lo, mid: md, high: hi, comb, frames: n, fps: low.fps };
 }
 
 function estimateTempo(nov, frames, fps) {
@@ -497,7 +1068,6 @@ function estimateTempo(nov, frames, fps) {
     }
     let score = cnt > 0 ? sum / cnt : 0;
 
-    // 2nd harmonic reinforces
     const lag2 = lag * 2, li2 = Math.floor(lag2);
     if (li2 < frames - 4) {
       const fr2 = lag2 - li2;
@@ -509,7 +1079,6 @@ function estimateTempo(nov, frames, fps) {
       if (c2 > 0) score += 0.45 * (s2 / c2);
     }
 
-    // Tempo prior near 118
     const l = Math.log2(bpm / 118);
     score *= Math.exp(-0.5 * l * l / 0.36);
 
@@ -538,119 +1107,341 @@ function findPhase(nov, frames, fps, bpm) {
   return bestPhase / fps;
 }
 
+/* -- onset peaks ------------------------------------------------ */
+function pickPeaks(nov, frames, fps, minGapSec) {
+  const peaks = [];
+  const W = Math.max(3, Math.round(fps * 0.34));
+  const minGap = Math.max(1, Math.round(minGapSec * fps));
+
+  for (let i = 1; i < frames - 1; i++) {
+    const v = nov[i];
+    if (v <= nov[i - 1] || v < nov[i + 1]) continue;
+    if (v < 0.06) continue;
+
+    let mean = 0, cnt = 0;
+    const a = Math.max(0, i - W), b = Math.min(frames - 1, i + W);
+    for (let j = a; j <= b; j++) { mean += nov[j]; cnt++; }
+    mean /= cnt;
+    if (v < mean * 1.30 + 0.025) continue;
+
+    peaks.push({ i, t: i / fps, v });
+  }
+
+  peaks.sort((a, b) => b.v - a.v);
+  const kept = [];
+  for (const p of peaks) {
+    let ok = true;
+    for (const k of kept) {
+      if (Math.abs(k.t - p.t) * fps < minGap) { ok = false; break; }
+    }
+    if (ok) kept.push(p);
+  }
+  kept.sort((a, b) => a.t - b.t);
+  return kept;
+}
+
+function fallbackGrid(duration) {
+  const beats = [], energies = [], low = [], mid = [], high = [], weights = [], types = [];
+  for (let t = 1.8; t < Math.min(duration, MAX_ANALYSIS_SECONDS) - 1.5; t += 0.55) {
+    beats.push(t); energies.push(0.5);
+    low.push(0.4); mid.push(0.4); high.push(0.4);
+    weights.push(0.5); types.push('mid');
+  }
+  return { beats, energies, low, mid, high, weights, types, bpm: 110 };
+}
+
+function buildGrid(phaseSec, bpm, duration, bands, peaks) {
+  const period = 60 / bpm;
+  const minT = 1.35;
+  const maxT = duration - 1.2;
+  const frames = bands.frames;
+  const fps = bands.fps;
+  const LOOK = Math.max(1, Math.round(fps * 0.06));
+
+  function bandAt(arr, t) {
+    const idx = Math.round(t * fps);
+    let m = 0;
+    const a = Math.max(0, idx - LOOK), b = Math.min(frames - 1, idx + LOOK);
+    for (let i = a; i <= b; i++) if (arr[i] > m) m = arr[i];
+    return m;
+  }
+
+  /* 1 — lay down the tempo grid */
+  const times = [];
+  for (let t = phaseSec; t < maxT; t += period) if (t >= minT) times.push(t);
+  if (times.length < 4) return fallbackGrid(duration);
+
+  /* 2 — snap every slot onto a real onset when there is one */
+  const TOL = period * 0.30;
+  const used = new Set();
+  for (let i = 0; i < times.length; i++) {
+    let best = null, bd = TOL;
+    for (const p of peaks) {
+      if (used.has(p)) continue;
+      const d = Math.abs(p.t - times[i]);
+      if (d < bd) { bd = d; best = p; }
+    }
+    if (best) { used.add(best); times[i] = best.t; }
+  }
+
+  /* 3 — strong off-grid onsets become extra beats (syncopation) */
+  const extra = [];
+  for (const p of peaks) {
+    if (used.has(p) || p.v < 0.40) continue;
+    let nearest = Infinity;
+    for (const t of times) {
+      const d = Math.abs(t - p.t);
+      if (d < nearest) nearest = d;
+    }
+    if (nearest > period * 0.34 && nearest < period * 0.70) extra.push(p.t);
+  }
+
+  const all = times.concat(extra).sort((a, b) => a - b);
+
+  /* 4 — collapse anything that would be unhittable */
+  const merged = [];
+  for (const t of all) {
+    if (merged.length && t - merged[merged.length - 1] < 0.23) continue;
+    merged.push(t);
+  }
+
+  /* 5 — read the three bands at every beat */
+  const raw = merged.map(t => ({
+    t,
+    low: bandAt(bands.low, t),
+    mid: bandAt(bands.mid, t),
+    high: bandAt(bands.high, t),
+    e: bandAt(bands.comb, t)
+  }));
+
+  /* 6 — start where the music starts */
+  let start = 0;
+  for (let i = 0; i < raw.length; i++) {
+    if (raw[i].e > 0.16 || raw[i].low > 0.20) { start = Math.max(0, i - 1); break; }
+  }
+
+  /* 7 — swallow beats that land in dead air → long floaty hop */
+  const out = [];
+  for (let i = start; i < raw.length; i++) {
+    const b = raw[i];
+    const live = b.e > 0.09 || b.low > 0.12 || b.mid > 0.12 || b.high > 0.12;
+    if (!live && out.length && i < raw.length - 1) {
+      const gap = raw[i + 1].t - out[out.length - 1].t;
+      if (gap < 2.9) continue;
+    }
+    out.push(b);
+  }
+
+  if (out.length < 4) return fallbackGrid(duration);
+
+  /* 8 — classify + build the beat list */
+  const beats = [], energies = [], low = [], mid = [], high = [], weights = [], types = [];
+
+  for (let i = 0; i < out.length; i++) {
+    const b = out[i];
+    beats.push(b.t);
+    energies.push(clamp(b.e, 0, 1));
+    low.push(clamp(b.low, 0, 1));
+    mid.push(clamp(b.mid, 0, 1));
+    high.push(clamp(b.high, 0, 1));
+    weights.push(clamp(0.52 * b.low + 0.30 * b.mid + 0.18 * b.high, 0, 1));
+
+    let type = 'mid';
+    if (b.low > b.mid * 1.05 && b.low > b.high * 1.15) type = 'bass';
+    else if (b.high > b.mid * 1.02 && b.high > b.low * 1.20) type = 'hat';
+    else if (b.mid > b.low * 1.05 && b.mid > b.high * 1.05) type = 'snare';
+    types.push(type);
+  }
+
+  /* 9 — per-band visual normalisation (so quiet hats still read) */
+  function norm(arr) {
+    let mx = 0;
+    for (const v of arr) if (v > mx) mx = v;
+    if (mx < 1e-6) return arr.map(() => 0.4);
+    return arr.map(v => clamp(v / mx, 0, 1));
+  }
+
+  return {
+    beats, energies, types,
+    low: norm(low), mid: norm(mid), high: norm(high),
+    weights,
+    bpm: Math.round(bpm)
+  };
+}
+
 async function analyzeBuffer(buffer, onProgress) {
   const duration = Math.min(buffer.duration, MAX_ANALYSIS_SECONDS);
 
-  onProgress(0.22, 'Filtering the low end…');
+  onProgress(0.18, 'Splitting the spectrum…');
   await nextFrame();
 
-  // Render lowpassed mono at reduced sample rate → 4x smaller & faster
-  const off = new OfflineAudioContext(1, Math.ceil(duration * ANALYSIS_SR), ANALYSIS_SR);
+  const sr = ANALYSIS_SR;
+  const off = new OfflineAudioContext(3, Math.ceil(duration * sr), sr);
   const src = off.createBufferSource();
   src.buffer = buffer;
-  const lp = off.createBiquadFilter();
-  lp.type = 'lowpass'; lp.frequency.value = 220; lp.Q.value = 0.7;
-  const hp = off.createBiquadFilter();
-  hp.type = 'highpass'; hp.frequency.value = 28;
-  src.connect(lp); lp.connect(hp); hp.connect(off.destination);
+
+  const mk = (type, freq, Q) => {
+    const f = off.createBiquadFilter();
+    f.type = type; f.frequency.value = freq; f.Q.value = Q;
+    return f;
+  };
+
+  const lowLP = mk('lowpass', 155, 0.7);
+  const lowHP = mk('highpass', 30, 0.7);
+  const midHP = mk('highpass', 220, 0.7);
+  const midLP = mk('lowpass', 2200, 0.7);
+  const highHP = mk('highpass', 3500, 0.7);
+
+  const merger = off.createChannelMerger(3);
+  src.connect(lowLP); lowLP.connect(lowHP); lowHP.connect(merger, 0, 0);
+  src.connect(midHP); midHP.connect(midLP); midLP.connect(merger, 0, 1);
+  src.connect(highHP); highHP.connect(merger, 0, 2);
+  merger.connect(off.destination);
   src.start(0);
 
   let rendered;
   try {
     rendered = await off.startRendering();
   } catch (e) {
-    console.warn('Offline render failed, falling back to raw data', e);
-    // Fallback: use raw data directly (slower but works)
+    console.warn('Offline render failed, falling back', e);
     const ch = buffer.getChannelData(0);
-    const { nov, frames, fps } = computeNovelty(ch, buffer.sampleRate);
-    const bpm = estimateTempo(nov, frames, fps);
-    const phase = findPhase(nov, frames, fps, bpm);
-    return { beats: buildGrid(phase, bpm, duration, nov, frames, fps), bpm: Math.round(bpm) };
+    const band = computeNovelty(ch, buffer.sampleRate);
+    const bands = combineBands(band, band, band);
+    const bpm = estimateTempo(bands.comb, bands.frames, bands.fps);
+    const phase = findPhase(bands.comb, bands.frames, bands.fps, bpm);
+    const peaks = pickPeaks(bands.comb, bands.frames, bands.fps, 0.13);
+    const grid = buildGrid(phase, bpm, duration, bands, peaks);
+    grid.seed = seedFrom(bands.comb, bands.frames, bpm, duration);
+    return grid;
   }
 
-  onProgress(0.55, 'Hunting for onsets…');
+  onProgress(0.52, 'Hunting for onsets…');
   await nextFrame();
 
-  const data = rendered.getChannelData(0);
-  const { nov, frames, fps } = computeNovelty(data, ANALYSIS_SR);
+  const low = computeNovelty(rendered.getChannelData(0), sr);
+  const mid = computeNovelty(rendered.getChannelData(1), sr);
+  const high = computeNovelty(rendered.getChannelData(2), sr);
+  const bands = combineBands(low, mid, high);
 
-  onProgress(0.78, 'Counting the tempo…');
+  onProgress(0.74, 'Counting the tempo…');
   await nextFrame();
 
-  let bpm = estimateTempo(nov, frames, fps);
+  let bpm = estimateTempo(bands.comb, bands.frames, bands.fps);
   if (!isFinite(bpm) || bpm < 55 || bpm > 200) bpm = 110;
 
-  const phase = findPhase(nov, frames, fps, bpm);
+  const phase = findPhase(bands.comb, bands.frames, bands.fps, bpm);
 
-  const beats = buildGrid(phase, bpm, duration, nov, frames, fps);
+  onProgress(0.88, 'Chasing the syncopation…');
+  await nextFrame();
+
+  const peaks = pickPeaks(bands.comb, bands.frames, bands.fps, 0.12);
+  const grid = buildGrid(phase, bpm, duration, bands, peaks);
+  grid.seed = seedFrom(bands.comb, bands.frames, bpm, duration);
 
   onProgress(1.0, 'Ready');
   await nextFrame();
 
-  return { beats, bpm: Math.round(bpm) };
+  return grid;
 }
 
-function buildGrid(phaseSec, bpm, duration, nov, frames, fps) {
-  const period = 60 / bpm;
-  const minT = 1.45;
-  const maxT = duration - 1.25;
-  const beats = [];
-  let started = false;
-
-  const LOOK = Math.max(2, Math.round(fps * 0.05)); // ~50 ms each side
-
-  for (let t = phaseSec; t < maxT; t += period) {
-    if (t < minT) continue;
-    const idx = Math.round(t * fps);
-    let localMax = 0;
-    for (let i = Math.max(0, idx - LOOK); i <= Math.min(frames - 1, idx + LOOK); i++) {
-      if (nov[i] > localMax) localMax = nov[i];
-    }
-    if (!started) {
-      if (localMax > 0.15) started = true;
-      else continue;
-    }
-    beats.push(t);
+function seedFrom(nov, frames, bpm, duration) {
+  let s = 2166136261 >>> 0;
+  for (let i = 0; i < frames; i += 11) {
+    s ^= (nov[i] * 16777216) | 0;
+    s = Math.imul(s, 16777619) >>> 0;
   }
-
-  // Fallback if detection failed
-  if (beats.length < 4) {
-    beats.length = 0;
-    for (let t = 1.8; t < Math.min(duration, MAX_ANALYSIS_SECONDS) - 1.5; t += 0.55) beats.push(t);
-  }
-
-  // Guarantee a minimum gap
-  const minGap = 0.28;
-  const out = [];
-  for (const b of beats) {
-    if (out.length && b - out[out.length - 1] < minGap) continue;
-    out.push(b);
-  }
-  return out;
+  s ^= Math.round(bpm * 97);
+  s = Math.imul(s, 16777619) >>> 0;
+  s ^= Math.round(duration * 31);
+  s = Math.imul(s, 16777619) >>> 0;
+  return s >>> 0;
 }
 
 /* ============================================================
    LEVEL
    ============================================================ */
-const PALETTE = [0xffc2a1, 0x9fe0c8, 0xa9cdf0, 0xf6c6d8, 0xc9bdf0, 0xf7e0a8];
 const WHITE = new THREE.Color(0xffffff);
 
-function buildLevel(beatTimes) {
+function buildLevel(beatTimes, energies, seed, extra) {
   const n = beatTimes.length;
   const x = new Float32Array(n), y = new Float32Array(n), z = new Float32Array(n);
-  const color = new Uint32Array(n);
+  const scale = new Float32Array(n), rot = new Float32Array(n);
+  const colors = new Array(n);
+
+  const types = (extra && extra.types) || new Array(n).fill('mid');
+  const weights = (extra && extra.weights) || new Array(n).fill(0.5);
+  const lows = (extra && extra.low) || new Array(n).fill(0.4);
+  const highs = (extra && extra.high) || new Array(n).fill(0.4);
+
+  const rnd = mulberry32((seed >>> 0) ^ 0x9e3779b9);
+  const pal = theme.tiles;
+  const palOff = Math.floor(rnd() * pal.length);
+  const inkC = theme.ink;
+
   let cz = 0;
+  let lat = 0;
+  let vy = 0;
+  let first = true;
+
   for (let i = 0; i < n; i++) {
+    const e = energies[i] != null ? energies[i] : 0.5;
+    const w = weights[i] != null ? weights[i] : 0.5;
+    const type = types[i] || 'mid';
+
     if (i > 0) {
-      const dt = Math.min(1.5, beatTimes[i] - beatTimes[i - 1]);
-      cz -= Math.max(1.7, Math.min(4.2, dt * 3.1));
+      const dt = clamp(beatTimes[i] - beatTimes[i - 1], 0.20, 3.2);
+
+      // Organic breathing so it never feels metronomic
+      const breathe = 0.86 + 0.26 * Math.sin(i * 0.61 + seed * 0.0007) + (rnd() - 0.5) * 0.30;
+
+      // Heavy kick → the path lurches forward. Light hats → tight little steps.
+      let push = 2.55 + w * 1.85;
+      if (type === 'bass') push += 0.60;
+      else if (type === 'hat') push -= 0.45;
+
+      const step = clamp(dt * push * breathe, 1.25, 7.4);
+      cz -= step;
+
+      // Lateral drift — busy hits push sideways harder
+      const swing = (type === 'hat' ? 1.35 : type === 'bass' ? 1.6 : 2.6) * (0.35 + e);
+      lat += (rnd() - 0.5) * swing;
+      lat *= 0.80;
+      lat = clamp(lat, -2.3, 2.3);
     }
+
     z[i] = cz;
-    x[i] = Math.sin(cz * 0.17) * 1.25;
-    y[i] = 0.85 + Math.sin(cz * 0.11 + 0.7) * 0.6;
-    color[i] = PALETTE[(i * 5) % PALETTE.length];
+    x[i] = lat + Math.sin(cz * 0.15 + seed * 0.0009) * 0.60 + Math.sin(cz * 0.031) * 0.90;
+
+    // Height reads like pitch: kicks sink, hats float
+    const targetY = clamp(
+      0.82 + highs[i] * 1.75 - lows[i] * 0.78 + Math.sin(cz * 0.09 + 0.6) * 0.38,
+      0.28, 2.70
+    );
+
+    if (first) { vy = targetY; first = false; }
+    vy += (targetY - vy) * 0.42;
+    y[i] = vy;
+
+    // Colour: deep for kicks, washed-out for hats, warm for snares
+    const col = pal[(i * 3 + palOff) % pal.length].clone();
+    if (type === 'bass') col.lerp(inkC, 0.20).offsetHSL(0, 0.06, -0.05);
+    else if (type === 'hat') col.lerp(WHITE, 0.44).offsetHSL(0, -0.05, 0.05);
+    else if (type === 'snare') col.lerp(WHITE, 0.14);
+    colors[i] = col;
+
+    // Size + tilt: hand-placed, not stamp-printed
+    let sc = 0.86 + e * 0.26;
+    if (type === 'bass') sc += 0.24;
+    else if (type === 'hat') sc -= 0.17;
+    scale[i] = clamp(sc, 0.60, 1.50);
+
+    rot[i] = (rnd() - 0.5) * 0.55 + (type === 'hat' ? 0.22 : 0);
   }
-  return { beats: beatTimes, x, y, z, color, count: n };
+
+  return {
+    beats: beatTimes, energies, x, y, z, colors, count: n,
+    types, weights, low: lows, high: highs, scale, rot
+  };
 }
 
 /* ============================================================
@@ -663,7 +1454,12 @@ const state = {
   airborne: 0, squash: 0, hopProgress: 0,
   audioSrc: null, gainNode: null,
   bpm: 0, buffer: null, camShake: 0,
-  songDuration: 0
+  songDuration: 0,
+  pulse: 0,      // beat envelope (0..1)
+  live: 0,       // smoothed live bass
+  roll: 0,
+  flow: 0,       // 0..1 flow meter
+  flowOn: false
 };
 let judged = [], judgePtr = 0;
 let score = 0, combo = 0, maxCombo = 0;
@@ -685,10 +1481,30 @@ function getTilePos(i, t, out) {
   return out;
 }
 
+/* Local hit window: shrinks in dense passages so beats never overlap */
+function timingWindow(i) {
+  const B = state.level.beats;
+  const prev = i > 0 ? B[i] - B[i - 1] : 0.8;
+  const next = i < B.length - 1 ? B[i + 1] - B[i] : 0.8;
+  return clamp(Math.min(prev, next) * 0.45, 0.115, 0.30);
+}
+
 function buildMenuLevel() {
-  const beats = [];
-  for (let i = 0; i < 60; i++) beats.push(i * 0.58);
-  state.level = buildLevel(beats);
+  const n = 64;
+  const beats = [], energies = [], low = [], mid = [], high = [], weights = [], types = [];
+  for (let i = 0; i < n; i++) {
+    beats.push(i * 0.58);
+    const e = 0.35 + 0.6 * Math.abs(Math.sin(i * 0.83));
+    energies.push(e);
+    const isBass = i % 4 === 0;
+    const isHat = i % 4 === 2;
+    low.push(isBass ? 0.95 : 0.22);
+    mid.push(!isBass && !isHat ? 0.85 : 0.28);
+    high.push(isHat ? 0.90 : 0.18);
+    weights.push(isBass ? 0.85 : isHat ? 0.28 : 0.52);
+    types.push(isBass ? 'bass' : isHat ? 'hat' : 'snare');
+  }
+  state.level = buildLevel(beats, energies, 0xBEA7, { low, mid, high, weights, types });
   state.pIdx = 0;
   state.menuTime = 0;
   state.squash = 0;
@@ -697,7 +1513,7 @@ function buildMenuLevel() {
 }
 
 /* ============================================================
-   PLAYER TRANSFORM
+   PLAYER TRANSFORM — hop shape follows the beat type
    ============================================================ */
 function updatePlayerTransform(t) {
   const L = state.level;
@@ -709,16 +1525,32 @@ function updatePlayerTransform(t) {
 
   if (i + 1 < B.length) {
     const interval = Math.max(0.05, B[i + 1] - B[i]);
-    const dur = Math.min(0.72, Math.max(0.22, interval * 0.68));
+    const nextType = L.types[i + 1] || 'mid';
+    const nextW = L.weights[i + 1] != null ? L.weights[i + 1] : 0.5;
+
+    // Kicks get a late launch + long float. Hats get a snappy little flick.
+    let durFrac = 0.76;
+    if (nextType === 'bass') durFrac = 0.87;
+    else if (nextType === 'hat') durFrac = 0.61;
+    else if (nextType === 'snare') durFrac = 0.72;
+
+    const dur = clamp(interval * durFrac, 0.20, 1.15);
     const jumpStart = B[i + 1] - dur;
 
     if (t >= jumpStart) {
-      p = Math.min(1, Math.max(0, (t - jumpStart) / dur));
+      p = clamp((t - jumpStart) / dur, 0, 1);
       const eased = smootherstep(p);
       getTilePos(i + 1, t, _tmpB);
       _fullPos.copy(_groundPos).lerp(_tmpB, eased);
+
+      const dist = _groundPos.distanceTo(_tmpB);
+      let arcH = 0.42 + dist * 0.15 + interval * 0.30 + nextW * 0.55;
+      if (nextType === 'bass') arcH += 0.40;
+      else if (nextType === 'hat') arcH -= 0.16;
+      arcH = clamp(arcH, 0.30, 2.4);
+
       const arc = Math.sin(p * Math.PI);
-      _fullPos.y += arc * 0.98;
+      _fullPos.y += arc * arcH;
       airborne = arc;
     } else {
       _fullPos.copy(_groundPos);
@@ -740,13 +1572,36 @@ function updatePlayerTransform(t) {
 
   const easedP = smootherstep(p);
   playerMesh.rotation.x = -easedP * Math.PI * 2;
-  playerMesh.rotation.y += 0.006;
+  playerMesh.rotation.y += 0.006 + state.pulse * 0.02;
 
   shadowMesh.position.set(_groundPos.x, _groundPos.y + 0.225, _groundPos.z);
   const h = Math.max(0, _fullPos.y - _groundPos.y);
   const sc = Math.max(0.35, 1 - h * 0.30);
   shadowMesh.scale.setScalar(sc);
   shadowMesh.material.opacity = 0.17 * sc;
+}
+
+/* ---- trail ---------------------------------------------------- */
+function updateTrail(dt) {
+  trailTimer += dt;
+  if (trailTimer >= 0.030) {
+    trailTimer = 0;
+    const last = trailHist.pop();
+    last.pos.copy(playerGroup.position);
+    last.a = 1;
+    trailHist.unshift(last);
+  }
+  for (let i = 0; i < TRAIL_N; i++) {
+    const h = trailHist[i];
+    h.a *= Math.exp(-dt * 2.6);
+    const m = trailMeshes[i];
+    const k = h.a * (1 - i / TRAIL_N);
+    if (k < 0.02) { m.visible = false; continue; }
+    m.visible = true;
+    m.position.copy(h.pos);
+    m.material.opacity = k * 0.26;
+    m.scale.setScalar(0.40 + k * 0.85);
+  }
 }
 
 /* ============================================================
@@ -758,6 +1613,7 @@ function updateTiles(t, dt) {
   const L = state.level;
   const base = state.pIdx - 4;
   const nextIdx = state.pIdx + 1;
+  const pulse = state.pulse;
 
   for (let k = 0; k < TILE_POOL; k++) {
     const idx = base + k;
@@ -773,17 +1629,36 @@ function updateTiles(t, dt) {
     }
     m.userData.spawn = Math.min(1, m.userData.spawn + dt * 3.4);
     const spawnEase = 1 - Math.pow(1 - m.userData.spawn, 3);
-    m.scale.setScalar(0.4 + spawnEase * 0.6);
 
-    m.position.set(L.x[idx], L.y[idx] + Math.sin(t * 1.2 + idx * 0.7) * 0.06, L.z[idx]);
-    m.material.color.setHex(L.color[idx]);
+    const type = L.types[idx] || 'mid';
+    const weight = L.weights[idx] != null ? L.weights[idx] : 0.5;
 
-    if (idx === nextIdx) {
-      const pulse = 0.5 + 0.5 * Math.sin(t * 4.6);
-      m.material.color.lerp(WHITE, 0.16 + pulse * 0.22);
-    } else if (idx === state.pIdx) {
-      m.material.color.lerp(WHITE, 0.05);
+    let pop = 0, glow = 0.03, emissive = 0;
+
+    if (idx === state.pIdx) {
+      pop = pulse * (type === 'bass' ? 0.30 : 0.18);
+      glow = 0.05 + pulse * 0.46;
+      emissive = pulse * (0.42 + weight * 0.35) * theme.glow;
+    } else if (idx === nextIdx) {
+      const pl = 0.5 + 0.5 * Math.sin(t * 4.6);
+      pop = pl * (type === 'hat' ? 0.075 : 0.045);
+      glow = 0.13 + pl * 0.20 + pulse * 0.16;
+      emissive = (0.09 + pl * 0.10) * theme.glow;
     }
+
+    if (type === 'hat') glow += 0.05;
+    if (state.flowOn) emissive += 0.10 * theme.glow;
+
+    const baseScale = L.scale[idx] || 1;
+    m.scale.setScalar(baseScale * (0.4 + spawnEase * 0.6) * (1 + pop));
+
+    const bob = Math.sin(t * 1.2 + idx * 0.7) * (0.05 + (idx === state.pIdx ? pulse * 0.10 : 0));
+    m.position.set(L.x[idx], L.y[idx] + bob, L.z[idx]);
+
+    m.rotation.y = L.rot[idx] + Math.sin(t * 0.45 + idx) * 0.05;
+
+    m.material.color.copy(L.colors[idx]).lerp(WHITE, Math.min(0.85, glow));
+    m.material.emissive.copy(L.colors[idx]).multiplyScalar(emissive);
   }
 }
 
@@ -808,9 +1683,9 @@ function updateCueRing() {
   if (i + 1 >= L.count) { cueRing.visible = false; return; }
 
   const timeToBeat = L.beats[i + 1] - state.songTime;
-  const LOOKAHEAD = 1.6;
-  if (timeToBeat > 0 && timeToBeat < LOOKAHEAD) {
-    const k = 1 - timeToBeat / LOOKAHEAD;
+  const look = clamp((L.beats[i + 1] - L.beats[i]) * 1.4, 0.55, 1.7);
+  if (timeToBeat > 0 && timeToBeat < look) {
+    const k = 1 - timeToBeat / look;
     const eased = k * k;
     cueRing.position.set(L.x[i + 1], L.y[i + 1] + 0.245, L.z[i + 1]);
     cueRing.scale.setScalar(1.0 - eased * 0.82);
@@ -834,33 +1709,71 @@ function showFeedback(text, cls) {
   fbTimer = setTimeout(() => { feedbackEl.className = ''; }, 620);
 }
 
+function popScore() {
+  scoreEl.classList.remove('pop');
+  void scoreEl.offsetWidth;
+  scoreEl.classList.add('pop');
+}
+
 function updateHUD() {
   scoreEl.textContent = score.toLocaleString();
   if (combo >= 3) { comboEl.textContent = combo + ' COMBO'; comboEl.classList.add('on'); }
   else comboEl.classList.remove('on');
+
+  if (state.flowOn) flowTag.classList.add('on');
+  else flowTag.classList.remove('on');
 }
 
 /* ============================================================
    JUDGING
    ============================================================ */
-function onJudge(kind) {
+function onJudge(kind, offset, weight) {
   if (kind === 'miss') {
     counts.miss++; combo = 0;
+    state.flow = Math.max(0, state.flow - 0.45);
     state.squash = 0.20;
     state.camShake = Math.max(state.camShake, 0.012);
     showFeedback('MISS', 'miss');
+    timingEl.classList.remove('on');
   } else {
     combo++;
     if (combo > maxCombo) maxCombo = combo;
     counts[kind]++;
-    const mult = 1 + Math.floor(combo / 8) * 0.5;
+
+    // Timing meter
+    const pct = clamp((offset || 0) / 0.30, -1, 1);
+    timingMark.style.left = (50 + pct * 47) + '%';
+    timingMark.style.background = kind === 'perfect' ? 'var(--mint)'
+      : kind === 'good' ? 'var(--sky)' : '#c9c7d8';
+    timingEl.classList.add('on');
+
+    // Flow meter
+    if (kind === 'perfect') state.flow = Math.min(1, state.flow + 0.115);
+    else if (kind === 'good') state.flow = Math.min(1, state.flow + 0.050);
+    else state.flow = Math.max(0, state.flow - 0.18);
+    const wasOn = state.flowOn;
+    state.flowOn = state.flow > 0.82;
+    if (state.flowOn && !wasOn) {
+      showFeedback('FLOW', 'perfect');
+      blip(1760, 0.05, 0.16);
+      state.camShake = Math.max(state.camShake, 0.022);
+    }
+
+    const comboMult = 1 + Math.floor(combo / 8) * 0.5;
+    const flowMult = state.flowOn ? 2 : 1;
+    const typeMult = 1 + (weight || 0.5) * 0.6;
     const base = kind === 'perfect' ? 300 : kind === 'good' ? 150 : 60;
-    score += Math.round(base * mult);
+    score += Math.round(base * comboMult * flowMult * typeMult);
+
+    popScore();
+
     if (kind === 'perfect') {
-      showFeedback('PERFECT', 'perfect'); blip(1320, 0.045, 0.09);
+      if (!state.flowOn) showFeedback('PERFECT', 'perfect');
+      blip(1320, 0.045, 0.09);
       state.camShake = Math.max(state.camShake, 0.018);
     } else if (kind === 'good') {
-      showFeedback('GOOD', 'good'); blip(990, 0.032, 0.08);
+      showFeedback('GOOD', 'good');
+      blip(990, 0.032, 0.08);
       state.camShake = Math.max(state.camShake, 0.010);
     } else {
       showFeedback('OK', 'ok');
@@ -870,24 +1783,45 @@ function onJudge(kind) {
 }
 
 function onTap() {
-  if (state.mode !== 'play') return;
+  if (state.mode !== 'play' || !state.level) return;
   const t = state.songTime;
   const B = state.level.beats;
   let best = -1, bestD = 1e9;
   const from = Math.max(0, judgePtr - 1);
-  const to = Math.min(B.length, judgePtr + 4);
+  const to = Math.min(B.length, judgePtr + 5);
   for (let i = from; i < to; i++) {
     if (judged[i]) continue;
     const d = Math.abs(B[i] - t);
     if (d < bestD) { bestD = d; best = i; }
   }
-  if (best >= 0 && bestD <= 0.28) {
-    let kind;
-    if (bestD < 0.12) kind = 'perfect';
-    else if (bestD < 0.20) kind = 'good';
-    else kind = 'ok';
-    judged[best] = kind;
-    onJudge(kind);
+  if (best < 0) return;
+
+  const win = timingWindow(best);
+  if (bestD > win) return;
+
+  const offset = t - B[best];
+  let kind;
+  if (bestD < win * 0.42) kind = 'perfect';
+  else if (bestD < win * 0.74) kind = 'good';
+  else kind = 'ok';
+
+  judged[best] = kind;
+  onJudge(kind, offset, state.level.weights[best]);
+}
+
+/* ============================================================
+   FLOW
+   ============================================================ */
+function updateFlow(dt) {
+  if (state.mode === 'play') {
+    state.flow = Math.max(0, state.flow - dt * 0.055);
+  } else {
+    state.flow *= Math.exp(-dt * 2.0);
+  }
+  const on = state.flow > 0.82;
+  if (on !== state.flowOn) {
+    state.flowOn = on;
+    updateHUD();
   }
 }
 
@@ -908,17 +1842,47 @@ function showLoading(title, sub, progress) {
 
 function stopPlayback(fadeMs) {
   if (state.gainNode && actx) {
-    try { state.gainNode.gain.setTargetAtTime(0, actx.currentTime, fadeMs / 3000); } catch (e) {}
+    try { state.gainNode.gain.setTargetAtTime(0, actx.currentTime, fadeMs / 3000); } catch (e) { }
   }
   const src = state.audioSrc;
   state.audioSrc = null;
   if (src) {
     const t = fadeMs;
-    setTimeout(() => { try { src.stop(); } catch (e) {} }, t);
+    setTimeout(() => { try { src.stop(); } catch (e) { } }, t);
   }
 }
 
-async function startFromBuffer(buffer) {
+/* ============================================================
+   LIVE ANALYSER
+   ============================================================ */
+let analyser = null;
+let freqData = null;
+
+function attachAnalyser(ctx, node) {
+  try {
+    analyser = ctx.createAnalyser();
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.72;
+    freqData = new Uint8Array(analyser.frequencyBinCount);
+    node.connect(analyser);
+  } catch (e) {
+    analyser = null; freqData = null;
+  }
+}
+
+function readLiveAudio() {
+  if (!analyser || !freqData) { state.live *= 0.9; return; }
+  analyser.getByteFrequencyData(freqData);
+  let s = 0;
+  for (let i = 1; i < 7; i++) s += freqData[i];
+  const bass = s / (6 * 255);
+  state.live += (bass - state.live) * 0.28;
+}
+
+/* ============================================================
+   PLAYBACK
+   ============================================================ */
+async function startFromBuffer(buffer, precomputed) {
   const ctx = await ensureRunning();
   if (!ctx) {
     loadTitle.textContent = 'Audio unavailable';
@@ -933,47 +1897,68 @@ async function startFromBuffer(buffer) {
   showLoading('Listening', 'Decoding the rhythm', 0.08);
   await nextFrame();
 
-  let analysis;
-  try {
-    analysis = await analyzeBuffer(buffer, (p, msg) => showLoading('Listening', msg, p));
-  } catch (e) {
-    console.error('Analysis failed:', e);
-    analysis = { beats: [], bpm: 110 };
+  let analysis = precomputed;
+  if (!analysis) {
+    try {
+      analysis = await analyzeBuffer(buffer, (p, msg) => showLoading('Listening', msg, p));
+    } catch (e) {
+      console.error('Analysis failed:', e);
+      analysis = fallbackGrid(buffer.duration);
+      analysis.seed = 0xBEA7;
+    }
   }
 
+  applyTheme(makeTheme(analysis.seed || 0xBEA7));
+
   let beats = analysis.beats.slice();
+  let energies = analysis.energies.slice();
+  let weights = analysis.weights.slice();
+  let types = analysis.types.slice();
+  let lows = analysis.low.slice();
+  let highs = analysis.high.slice();
+
   const duration = buffer.duration;
 
-  // Extend grid past the analysis window for long songs
   if (duration > MAX_ANALYSIS_SECONDS - 4 && beats.length > 4) {
     const period = 60 / Math.max(60, analysis.bpm);
     let t = beats[beats.length - 1] + period;
-    while (t < duration - 1.2) { beats.push(t); t += period; }
+    while (t < duration - 1.2) {
+      beats.push(t); energies.push(0.45);
+      weights.push(0.5); types.push('mid');
+      lows.push(0.4); highs.push(0.4);
+      t += period;
+    }
   }
 
   if (beats.length < 4) {
-    beats = [];
-    for (let t = 1.8; t < Math.min(duration, MAX_ANALYSIS_SECONDS) - 1.5; t += 0.55) beats.push(t);
+    const fb = fallbackGrid(duration);
+    beats = fb.beats; energies = fb.energies;
+    weights = fb.weights; types = fb.types; lows = fb.low; highs = fb.high;
     analysis.bpm = 110;
   }
 
   state.bpm = analysis.bpm;
   state.buffer = buffer;
   state.songDuration = duration;
-  state.level = buildLevel(beats);
+  state.level = buildLevel(beats, energies, analysis.seed || 0xBEA7, {
+    types, weights, low: lows, high: highs
+  });
   state.pIdx = 0;
   state.squash = 0;
+  state.pulse = 0;
+  state.roll = 0;
+  state.flow = 0;
+  state.flowOn = false;
+  state.live = 0;
 
   score = 0; combo = 0; maxCombo = 0;
   counts = { perfect: 0, good: 0, ok: 0, miss: 0 };
   judged = new Array(state.level.beats.length).fill(null);
   judgePtr = 0;
   updateHUD();
+  timingEl.classList.remove('on');
 
-  // Make sure nothing is playing
   stopPlayback(0);
-
-  // Make sure the context is running RIGHT BEFORE we schedule
   await ensureRunning();
 
   const src = ctx.createBufferSource();
@@ -981,6 +1966,7 @@ async function startFromBuffer(buffer) {
   const g = ctx.createGain();
   g.gain.value = 1.0;
   src.connect(g).connect(ctx.destination);
+  attachAnalyser(ctx, g);
 
   const lead = 0.65;
   const when = ctx.currentTime + lead;
@@ -995,10 +1981,7 @@ async function startFromBuffer(buffer) {
   }
 
   src.onended = () => {
-    if (state.mode === 'play' && state.audioSrc === src) {
-      // song ended naturally
-      endGame();
-    }
+    if (state.mode === 'play' && state.audioSrc === src) endGame();
   };
 
   state.audioSrc = src;
@@ -1006,6 +1989,7 @@ async function startFromBuffer(buffer) {
   state.startTime = when;
   state.songTime = -lead;
   camTarget.set(state.level.x[0], state.level.y[0], state.level.z[0]);
+  camera.position.copy(camTarget).add(CAM_OFFSET);
 
   bpmTag.textContent = analysis.bpm + ' BPM';
 
@@ -1038,11 +2022,16 @@ function endGame() {
   showScreen(resultsEl);
 }
 
-function replay() { if (state.buffer) startFromBuffer(state.buffer); }
+function replay() {
+  if (state.buffer) startFromBuffer(state.buffer);
+}
 
 function backToMenu() {
   state.mode = 'menu';
   state.buffer = null;
+  state.flow = 0;
+  state.flowOn = false;
+  flowTag.classList.remove('on');
   stopPlayback(200);
   hudEl.classList.add('hidden');
   buildMenuLevel();
@@ -1149,7 +2138,6 @@ fileInput.addEventListener('change', async (e) => {
   const file = e.target.files && e.target.files[0];
   if (!file) return;
 
-  // CRITICAL: unlock audio inside this user gesture
   await unlockAudio();
   const ctx = await ensureRunning();
   if (!ctx) {
@@ -1168,7 +2156,6 @@ fileInput.addEventListener('change', async (e) => {
   await nextFrame();
 
   try {
-    // Read file — keep a copy for retry
     const raw = await file.arrayBuffer();
     const copy = raw.slice(0);
 
@@ -1233,10 +2220,9 @@ window.addEventListener('contextmenu', e => e.preventDefault());
 window.addEventListener('resize', onResize);
 window.addEventListener('orientationchange', () => setTimeout(onResize, 220));
 
-/* Handle iOS audio interruptions (phone call, etc.) */
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && actx && actx.state === 'suspended') {
-    actx.resume().catch(() => {});
+    actx.resume().catch(() => { });
   }
 });
 
@@ -1263,16 +2249,17 @@ function tick(now) {
 
   let t = 0;
 
-  if (state.mode === 'menu') {
+  if (state.mode === 'menu' || state.mode === 'loading') {
     state.menuTime += dt;
     t = state.menuTime;
     const L = state.level;
     if (L) {
       while (state.pIdx + 1 < L.beats.length && t >= L.beats[state.pIdx + 1]) {
         state.pIdx++;
-        state.squash = -0.32;
+        state.squash = L.types[state.pIdx] === 'bass' ? -0.42 : -0.28;
+        state.pulse = Math.max(state.pulse, L.types[state.pIdx] === 'bass' ? 0.85 : 0.5);
         getTilePos(state.pIdx, t, _tmpA);
-        spawnRing(_tmpA, false);
+        spawnRing(_tmpA, L.types[state.pIdx] === 'bass', L.colors[state.pIdx]);
       }
       if (state.pIdx >= L.beats.length - 1) {
         state.pIdx = 0; state.menuTime = 0; t = 0;
@@ -1280,6 +2267,7 @@ function tick(now) {
       }
       updatePlayerTransform(t);
       updateTiles(t, dt);
+      updateTrail(dt);
     }
     cueRing.visible = false;
   } else if (state.mode === 'play') {
@@ -1288,26 +2276,32 @@ function tick(now) {
     state.songTime = t;
     const L = state.level;
 
-    while (judgePtr < L.beats.length && t > L.beats[judgePtr] + 0.28) {
+    readLiveAudio();
+
+    while (judgePtr < L.beats.length && t > L.beats[judgePtr] + timingWindow(judgePtr)) {
       if (!judged[judgePtr]) { judged[judgePtr] = 'miss'; onJudge('miss'); }
       judgePtr++;
     }
+
     while (state.pIdx + 1 < L.beats.length && t >= L.beats[state.pIdx + 1]) {
       state.pIdx++;
-      state.squash = -0.40;
+      const ty = L.types[state.pIdx];
+      state.squash = ty === 'bass' ? -0.44 : ty === 'hat' ? -0.22 : -0.34;
+      state.pulse = Math.max(state.pulse, ty === 'bass' ? 1 : ty === 'hat' ? 0.6 : 0.78);
       getTilePos(state.pIdx, t, _tmpA);
       const kind = judged[state.pIdx];
-      spawnRing(_tmpA, kind === 'perfect' || kind === 'good');
+      spawnRing(_tmpA, kind === 'perfect' || kind === 'good' || ty === 'bass', L.colors[state.pIdx]);
     }
 
     updatePlayerTransform(t);
     updateTiles(t, dt);
+    updateTrail(dt);
     updateCueRing();
 
     if (t > L.beats[L.beats.length - 1] + 2.8) endGame();
   } else if (state.mode === 'results') {
     t = state.frozenTime;
-    if (state.level) { updateTiles(t, dt); updatePlayerTransform(t); }
+    if (state.level) { updateTiles(t, dt); updatePlayerTransform(t); updateTrail(dt); }
     cueRing.visible = false;
   } else {
     if (state.level) updateTiles(worldTime, dt);
@@ -1315,27 +2309,80 @@ function tick(now) {
   }
 
   updateRings(dt);
+  updateFlow(dt);
+
+  // Beat envelope decay
+  state.pulse *= Math.exp(-dt * 5.6);
 
   // Ambient particles
   particleGroup.position.set(camTarget.x * 0.6, 0, camTarget.z * 0.6);
+  const pBoost = 1 + state.pulse * 0.9 + state.live * 0.6;
   for (const p of particles) {
     p.position.y = p.userData.baseY + Math.sin(worldTime * p.userData.speed + p.userData.phase) * p.userData.amp;
     p.position.x += Math.sin(worldTime * 0.2 + p.userData.phase) * dt * 0.12;
+    p.material.opacity = Math.min(0.5, p.userData.baseOpacity * pBoost);
   }
 
-  // Camera follow
+  // ---- Spectrum backdrop ----
+  {
+    barGroup.position.set(camTarget.x, -0.4, camTarget.z - 34);
+    const bins = freqData ? Math.min(64, freqData.length - 1) : 0;
+    for (let i = 0; i < BAR_N; i++) {
+      const m = bars[i];
+      let target = 0;
+      if (freqData && bins > 0) {
+        const b = 1 + Math.floor(Math.pow(binForBar[i] / (BAR_N - 1), 0.85) * (bins - 1));
+        target = (freqData[b] / 255) ** 1.25;
+      } else {
+        target = 0.12 + 0.10 * Math.sin(worldTime * 1.4 + i * 0.5);
+      }
+      m.userData.h += (target - m.userData.h) * 0.30;
+      m.scale.y = 0.20 + m.userData.h * 7.5;
+      m.material.opacity = 0.30 + m.userData.h * 0.55;
+    }
+  }
+
+  // Ground grid follows the camera in steps (infinite illusion)
+  grid.position.x = Math.round(camTarget.x / 6) * 6;
+  grid.position.z = Math.round(camTarget.z / 6) * 6;
+  grid.material.opacity = 0.06 + state.pulse * 0.05 + state.live * 0.05;
+
+  // Lights ride the beat too
+  const energy = state.pulse + state.live * 0.6;
+  hemiLight.intensity = 1.9 + energy * 0.55;
+  keyLight.intensity = 2.05 + energy * 0.65;
+  rimLight.intensity = 0.7 + energy * 0.85 + (state.flowOn ? 0.5 : 0);
+  scene.fog.near = 26 + energy * 4;
+  scene.fog.far = 78 + energy * 12;
+
+  // Camera
   if (state.level) {
     const k = 1 - Math.exp(-dt * 3.6);
     camTarget.x += (_groundPos.x - camTarget.x) * k;
     camTarget.y += (_groundPos.y - camTarget.y) * k;
     camTarget.z += (_groundPos.z - camTarget.z) * k;
 
+    const vib = state.pulse;
     _tmpA.copy(camTarget).add(CAM_OFFSET);
-    if (state.mode === 'menu') {
+    _tmpA.y += vib * 0.55;
+    _tmpA.z -= vib * 0.40;
+
+    if (state.mode === 'menu' || state.mode === 'loading') {
       _tmpA.x += Math.sin(worldTime * 0.22) * 0.85;
       _tmpA.y += Math.sin(worldTime * 0.35) * 0.30;
     }
     camera.position.lerp(_tmpA, 1 - Math.exp(-dt * 4.2));
+
+    const L = state.level;
+    const i = state.pIdx;
+    let rollTarget = 0;
+    if (i + 1 < L.count) rollTarget = clamp((L.x[i + 1] - L.x[i]) * 0.045, -0.09, 0.09);
+    state.roll += (rollTarget - state.roll) * (1 - Math.exp(-dt * 3.2));
+
+    const fovTarget = BASE_FOV - vib * 3.4 - state.live * 1.6
+      - Math.min(4.5, combo * 0.07) - (state.flowOn ? 2.2 : 0);
+    camera.fov += (fovTarget - camera.fov) * (1 - Math.exp(-dt * 7));
+    camera.updateProjectionMatrix();
 
     state.camShake *= Math.exp(-dt * 7.5);
     if (state.camShake > 0.0005) {
@@ -1345,6 +2392,7 @@ function tick(now) {
 
     _tmpB.copy(camTarget).add(LOOK_OFFSET);
     camera.lookAt(_tmpB);
+    camera.rotateZ(state.roll + Math.sin(worldTime * 0.6) * 0.006);
   }
 
   renderer.render(scene, camera);
@@ -1353,9 +2401,11 @@ function tick(now) {
 /* ============================================================
    BOOT
    ============================================================ */
+applyTheme(makeTheme(0xBEA7));
 buildMenuLevel();
 showScreen(menuEl);
 requestAnimationFrame(tick);
-</script>
+  </script>
 </body>
+
 </html>
